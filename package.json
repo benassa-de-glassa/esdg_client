@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
+    "jqwidgets-framework": "^8.3.2",
+    "jqwidgets-scripts": "^8.3.2",
     "primeicons": "^2.0.0",
     "primereact": "^3.3.3",
     "react": "^16.12.0",

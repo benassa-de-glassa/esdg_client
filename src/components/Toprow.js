@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ListBox } from "primereact/listbox";
+import JqxListBox from'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox';
 
 class Toprow extends Component {
   constructor(props) {
@@ -7,7 +7,8 @@ class Toprow extends Component {
     this.state = {
       error: null,
       isLoaded: false,
-      items: []
+      items: [],
+      selected: []
     };
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -36,19 +37,28 @@ class Toprow extends Component {
     // fetch the url
     // then function chaining
     fetch(url)
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .then(res => this.setState(res))
-
-    console.log(this.state)
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          isLoaded: true,
+          items: res
+        });
+      });
   }
   componentDidMount() {
     this.makeRequest("undefined", "groups");
   }
 
   render() {
-    return <ListBox options={this.state.options} />;
-    // return <div> textInComponent </div>;
+    return (
+      <div>
+        <JqxListBox
+          source={this.state.items.groups}
+          multipleextended={true}
+          onChange={e => console.log(e)}
+        />
+      </div>
+    );
   }
 }
 
