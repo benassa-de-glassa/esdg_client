@@ -10,8 +10,23 @@ class Toprow extends Component {
       items: [],
       selected: []
     };
+    
+    
+    this.myListBox = React.createRef();
+    this.onSelect = this.onSelect.bind(this);
+    this.onUnselect = this.onUnselect.bind(this);
+
     this.makeRequest = this.makeRequest.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+  }
+
+  onSelect(event) {
+    const item = this.myListBox.current.getItem(event.args.index);
+    console.log("onselect", item);
+  }
+  onUnselect(event) {
+    const item = this.myListBox.current.getItem(event.args.index);
+    console.log("onUNselect", item);
   }
 
   makeRequest(event, type) {
@@ -20,11 +35,11 @@ class Toprow extends Component {
     url.pathname += type;
 
     if (event !== "undefined") {
-      console.log(this.state)
+      console.log(this.state);
       this.setState(prevState => ({
         ...prevState,
         selected: {
-          ...prevState.selected,
+          ...prevState.selected
         }
       }));
     }
@@ -50,7 +65,7 @@ class Toprow extends Component {
 
     console.log(url);
     // fetch the url
-    // then function chaining
+    // .then function chaining
     fetch(url)
       .then(res => res.json())
       .then(res => {
@@ -73,9 +88,12 @@ class Toprow extends Component {
     return (
       <div>
         <JqxListBox
+          ref={this.myListBox}
           source={this.state.items.groups}
           multipleextended={false}
           onChange={e => this.makeRequest(e, "dataset")}
+          onSelect={this.onSelect}
+          onUnselect={this.onUnselect}
         />
         <JqxListBox
           source={this.state.items.dataset}
