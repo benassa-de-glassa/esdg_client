@@ -10,8 +10,7 @@ class Toprow extends Component {
       items: [],
       selected: []
     };
-    
-    
+
     this.myListBox = React.createRef();
     this.onSelect = this.onSelect.bind(this);
     this.onUnselect = this.onUnselect.bind(this);
@@ -22,15 +21,33 @@ class Toprow extends Component {
 
   onSelect(event) {
     const item = this.myListBox.current.getItem(event.args.index);
-    console.log("onselect", item);
+    var element = item.originalItem;
+    const type = element.type;
+
+    /// add new item to the previous state based on the new selection
+    console.log(this.state);
+    this.setState(prevState => ({
+      ...prevState,
+      selected: {
+        ...prevState.selected,
+        [type]: element.label
+      }
+    }));
+
+    // update the state.selected to reflect the new selected items
   }
   onUnselect(event) {
     const item = this.myListBox.current.getItem(event.args.index);
+    var element = item.originalItem;
+    const type = element.type;
+
     console.log("onUNselect", item);
+
+    // update the state.selected to reflect the new selected items
   }
 
   makeRequest(event, type) {
-    var url = new URL("http://localhost:5000/api/");
+    var url = new URL("http://192.168.0.200:5000/api/");
     var params = {};
     url.pathname += type;
 
@@ -43,8 +60,6 @@ class Toprow extends Component {
         }
       }));
     }
-
-    console.log(event);
     // let group = this.state.items.groups[event.args.index]["label"];
     // let dataset = this.state.items.groups[event.args.index]["label"];
     // create the correct request based on the type parameter
@@ -77,7 +92,6 @@ class Toprow extends Component {
           }
         }));
       });
-    console.log(this.state);
   }
 
   componentDidMount() {
@@ -96,9 +110,12 @@ class Toprow extends Component {
           onUnselect={this.onUnselect}
         />
         <JqxListBox
+          // ref={this.myListBox}
           source={this.state.items.dataset}
           multipleextended={false}
           onChange={e => this.makeRequest(e, "meta")}
+          onSelect={this.onSelect}
+          onUnselect={this.onUnselect}
         />
       </div>
     );
