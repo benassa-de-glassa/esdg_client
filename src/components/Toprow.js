@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import update from 'immutability-helper';
 import JqxListBox from "jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox";
 
 class Toprow extends Component {
@@ -24,22 +25,28 @@ class Toprow extends Component {
     var element = item.originalItem;
     const type = element.type;
 
+    const prevState = this.state;
+    const newState = update(prevState,
+      {'selected'})
+    console.log(prevState)
     /// add new item to the previous state based on the new selection
-    console.log(this.state);
+    console.log('state' ,this.state);
     this.setState(prevState => ({
       ...prevState,
       selected: {
         ...prevState.selected,
-        [type]: element.label
+        [type]:  [element.label]
       }
     }));
 
     // update the state.selected to reflect the new selected items
   }
   onUnselect(event) {
+    console.log(event)
     const item = this.myListBox.current.getItem(event.args.index);
-    var element = item.originalItem;
-    const type = element.type;
+    console.log(item)
+    // var element = item.originalItem;
+    // const type = element.type;
 
     console.log("onUNselect", item);
 
@@ -51,15 +58,6 @@ class Toprow extends Component {
     var params = {};
     url.pathname += type;
 
-    if (event !== "undefined") {
-      console.log(this.state);
-      this.setState(prevState => ({
-        ...prevState,
-        selected: {
-          ...prevState.selected
-        }
-      }));
-    }
     // let group = this.state.items.groups[event.args.index]["label"];
     // let dataset = this.state.items.groups[event.args.index]["label"];
     // create the correct request based on the type parameter
