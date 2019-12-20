@@ -1,29 +1,29 @@
-import React, { Component } from "react";
-import JqxListBox from "jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox";
+import React, { Component } from 'react'
+import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 
 class Toprow extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       error: null,
       isLoaded: false,
       items: [],
       selected: []
-    };
+    }
 
-    this.onSelect = this.onSelect.bind(this);
-    this.onUnselect = this.onUnselect.bind(this);
+    this.onSelect = this.onSelect.bind(this)
+    this.onUnselect = this.onUnselect.bind(this)
 
-    this.makeRequest = this.makeRequest.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.makeRequest = this.makeRequest.bind(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
   }
 
-  onSelect(event) {
+  onSelect (event) {
     // console.log("select", event)
 
-    const element = event.args.item.originalItem;
-    const type = element.type;
-    var prevState = this.state;
+    const element = event.args.item.originalItem
+    const type = element.type
+    var prevState = this.state
 
     /// add new item to the previous state based on the new selection
     if (this.state.selected[type] !== undefined) {
@@ -36,28 +36,27 @@ class Toprow extends Component {
     this.setState(previousState => ({
       ...previousState,
       selected: prevState.selected
-    }));
+    }))
     // console.log(this.state.selected.dataset)
   }
-  onUnselect(event) {
-    console.log("unselect", event)
-    const item = event.args.item;
+
+  onUnselect (event) {
+    console.log('unselect', event)
+    const item = event.args.item
     // console.log("item ", item)
     if (item !== null) {
-
-      var element = item.originalItem;
-      const type = element.type;
-      var prevState = this.state;
-      console.log("this.state.selected[type] ", this.state.selected[type])
+      var element = item.originalItem
+      const type = element.type
+      var prevState = this.state
+      console.log('this.state.selected[type] ', this.state.selected[type])
 
       /// add new item to the previous state based on the new selection
       if (this.state.selected[type] !== undefined) {
         // find find correct list_index to remove
-        const list_index = prevState.selected[type].indexOf(element.label);
+        const listIndex = prevState.selected[type].indexOf(element.label)
         // remove list_index from prevState
-        prevState.selected[type].splice(list_index, 1)
-      }
-      else {
+        prevState.selected[type].splice(listIndex, 1)
+      } else {
         // pass
       }
 
@@ -66,37 +65,37 @@ class Toprow extends Component {
         ...previousState,
         selected: prevState.selected
       }
-      ));
+      ))
     }
     // console.log(this.state.selected.dataset)
   }
 
-  makeRequest(event, type) {
-    var url = new URL("http://192.168.178.30:5000/api/");
-    var params = {};
-    url.pathname += type;
+  makeRequest (event, type) {
+    var url = new URL('http://192.168.178.30:5000/api/')
+    var params = {}
+    url.pathname += type
 
     // create the correct request based on the type parameter
     switch (type) {
-      case "groups":
-        break;
-      case "dataset":
+      case 'groups':
+        break
+      case 'dataset':
         params = {
-          dataset: this.state.selected["groups"]
-        };
-        break;
-      case "meta":
+          dataset: this.state.selected.groups
+        }
+        break
+      case 'meta':
         params = {
-          groups: this.state.selected["groups"],
-          dataset: this.state.selected["dataset"],
-        };
-        break;
+          groups: this.state.selected.groups,
+          dataset: this.state.selected.dataset
+        }
+        break
       default:
-        console.log("default");
+        console.log('default')
     }
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
-    );
+    )
 
     // fetch the url
     // .then function chaining
@@ -109,31 +108,31 @@ class Toprow extends Component {
             ...prevState.items,
             [type]: res[type]
           }
-        }));
-      });
+        }))
+      })
   }
 
-  componentDidMount() {
-    this.makeRequest(undefined, "groups");
+  componentDidMount () {
+    this.makeRequest(undefined, 'groups')
   }
 
-  render() {
-    let metaListboxes;
+  render () {
+    let metaListboxes
     if (this.state.items.meta !== undefined) {
       metaListboxes = this.state.items.meta
 
       const keys = Object.keys(metaListboxes)
 
       metaListboxes = keys.map(key =>
-          <JqxListBox
-            source={this.state.items.meta[key]}
-            multipleextended={true}
-            onSelect={this.onSelect}
-            onUnselect={this.onUnselect}
-          />
+        <JqxListBox
+          key = {key}
+          source={this.state.items.meta[key]}
+          multipleextended={true}
+          onSelect={this.onSelect}
+          onUnselect={this.onUnselect}
+        />
 
       )
-
     }
 
     return (
@@ -142,14 +141,14 @@ class Toprow extends Component {
           <JqxListBox
             source={this.state.items.groups}
             multipleextended={false}
-            onChange={e => this.makeRequest(e, "dataset")}
+            onChange={e => this.makeRequest(e, 'dataset')}
             onSelect={this.onSelect}
             onUnselect={this.onUnselect}
           />
           <JqxListBox
             source={this.state.items.dataset}
             multipleextended={false}
-            onChange={e => this.makeRequest(e, "meta")}
+            onChange={e => this.makeRequest(e, 'meta')}
             onSelect={this.onSelect}
             onUnselect={this.onUnselect}
           />
@@ -160,8 +159,8 @@ class Toprow extends Component {
         </span>
 
       </div>
-    );
+    )
   }
 }
 
-export default Toprow;
+export default Toprow
