@@ -26,8 +26,8 @@ class Toprow extends Component {
     const type = element.type;
 
     const prevState = this.state;
-    const newState = update(prevState,
-      {'selected'})
+    // const newState = update(prevState,
+    //   {'selected'})
     console.log(prevState)
     /// add new item to the previous state based on the new selection
     console.log('state' ,this.state);
