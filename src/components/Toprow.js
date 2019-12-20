@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 
+import { API_URL } from '../paths.js'
+
 class Toprow extends Component {
   constructor (props) {
     super(props)
@@ -71,7 +73,7 @@ class Toprow extends Component {
   }
 
   makeRequest (event, type) {
-    var url = new URL('http://192.168.178.30:5000/api/')
+    var url = new URL(API_URL)
     var params = {}
     url.pathname += type
 

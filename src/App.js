@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import './App.css';
-import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
-import 'jqwidgets-scripts/jqwidgets/styles/jqx.material-purple.css';
+import './App.css'
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css'
+// import 'jqwidgets-scripts/jqwidgets/styles/jqx.material-purple.css'
 
-import Toprow from './components/Toprow.js';
+import Toprow from './components/Toprow.js'
 
-function App() {
+function App () {
   return (
-        <Toprow />
-  );
+    <Toprow />
+  )
 }
 
-export default App;
+export default App
