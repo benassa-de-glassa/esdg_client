@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import update from 'immutability-helper';
 import JqxListBox from "jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox";
 
 class Toprow extends Component {
@@ -12,7 +11,6 @@ class Toprow extends Component {
       selected: []
     };
 
-    this.myListBox = React.createRef();
     this.onSelect = this.onSelect.bind(this);
     this.onUnselect = this.onUnselect.bind(this);
 
@@ -21,40 +19,54 @@ class Toprow extends Component {
   }
 
   onSelect(event) {
-    const item = this.myListBox.current.getItem(event.args.index);
-    var element = item.originalItem;
+    const element = event.args.item.originalItem;
     const type = element.type;
+    var prevState = this.state;
 
-    const prevState = this.state;
-    // const newState = update(prevState,
-    //   {'selected'})
-    console.log(prevState)
     /// add new item to the previous state based on the new selection
-    console.log('state' ,this.state);
-    this.setState(prevState => ({
-      ...prevState,
-      selected: {
-        ...prevState.selected,
-        [type]:  [element.label]
-      }
-    }));
+    if (this.state.selected[type] !== undefined) {
+      prevState.selected[type].push(element.label)
+    } else {
+      prevState.selected[type] = [element.label]
+    }
 
     // update the state.selected to reflect the new selected items
+    this.setState(previousState => ({
+      ...previousState,
+      selected: prevState.selected
+    }));
   }
   onUnselect(event) {
-    console.log(event)
-    const item = this.myListBox.current.getItem(event.args.index);
-    console.log(item)
-    // var element = item.originalItem;
-    // const type = element.type;
+    const item = event.args.item;
+    if (item !== null) {
 
-    console.log("onUNselect", item);
+      var element = item.originalItem;
+      const type = element.type;
+      var prevState = this.state;
 
-    // update the state.selected to reflect the new selected items
+
+      /// add new item to the previous state based on the new selection
+      if (this.state.selected[type] !== undefined) {
+        // find find correct list_index to remove
+        const list_index = prevState.selected[type].indexOf(element.label);
+        // remove list_index from prevState
+        prevState.selected[type].splice(list_index, 1)
+      }
+      else {
+        // pass
+      }
+
+      // update the state.selected to reflect the new selected items
+      this.setState(prevState => ({
+        ...prevState,
+        selected: prevState.selected
+      }
+      ));
+    }
   }
 
   makeRequest(event, type) {
-    var url = new URL("http://192.168.0.200:5000/api/");
+    var url = new URL("http://localhost:5000/api/");
     var params = {};
     url.pathname += type;
 
@@ -65,9 +77,15 @@ class Toprow extends Component {
       case "groups":
         break;
       case "dataset":
-        // params = { dataset: group };
+        params = { 
+          dataset: this.state.selected["groups"]
+        };
         break;
       case "meta":
+        params = {
+          groups: this.state.selected["groups"],
+          dataset: this.state.selected["dataset"],
+        };
         break;
       default:
         console.log("default");
@@ -100,7 +118,6 @@ class Toprow extends Component {
     return (
       <div>
         <JqxListBox
-          ref={this.myListBox}
           source={this.state.items.groups}
           multipleextended={false}
           onChange={e => this.makeRequest(e, "dataset")}
@@ -108,13 +125,18 @@ class Toprow extends Component {
           onUnselect={this.onUnselect}
         />
         <JqxListBox
-          // ref={this.myListBox}
           source={this.state.items.dataset}
           multipleextended={false}
           onChange={e => this.makeRequest(e, "meta")}
           onSelect={this.onSelect}
           onUnselect={this.onUnselect}
         />
+
+      {/* {
+        // create listboxes dynamically depending on the elements in this.state.items.meta
+        this.state.items.meta.map( element => jqxlistbox of elemet)
+      } */}
+
       </div>
     );
   }
