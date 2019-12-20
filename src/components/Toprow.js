@@ -77,7 +77,7 @@ class Toprow extends Component {
       case "groups":
         break;
       case "dataset":
-        params = { 
+        params = {
           dataset: this.state.selected["groups"]
         };
         break;
@@ -115,6 +115,16 @@ class Toprow extends Component {
   }
 
   render() {
+    if (this.state.items.meta !== undefined) {
+      const meta_listboxes = <JqxListBox
+        source={this.state.items.meta.countries}
+        multipleextended={true}
+        onChange={e => this.makeRequest(e, "meta")}
+        onSelect={this.onSelect}
+        onUnselect={this.onUnselect} 
+        />
+
+    }
     return (
       <div>
         <JqxListBox
@@ -132,10 +142,10 @@ class Toprow extends Component {
           onUnselect={this.onUnselect}
         />
 
-      {/* {
-        // create listboxes dynamically depending on the elements in this.state.items.meta
-        this.state.items.meta.map( element => jqxlistbox of elemet)
-      } */}
+        
+        {/* // create listboxes dynamically depending on the elements in this.state.items.meta */}
+        meta_listboxes;
+        
 
       </div>
     );
