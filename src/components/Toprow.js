@@ -19,6 +19,8 @@ class Toprow extends Component {
   }
 
   onSelect(event) {
+    // console.log("select", event)
+
     const element = event.args.item.originalItem;
     const type = element.type;
     var prevState = this.state;
@@ -35,14 +37,18 @@ class Toprow extends Component {
       ...previousState,
       selected: prevState.selected
     }));
+    // console.log(this.state.selected.dataset)
   }
   onUnselect(event) {
+    console.log("unselect", event)
     const item = event.args.item;
+    // console.log("item ", item)
     if (item !== null) {
 
       var element = item.originalItem;
       const type = element.type;
       var prevState = this.state;
+      console.log("this.state.selected[type] ", this.state.selected[type])
 
       /// add new item to the previous state based on the new selection
       if (this.state.selected[type] !== undefined) {
@@ -56,13 +62,13 @@ class Toprow extends Component {
       }
 
       // update the state.selected to reflect the new selected items
-      this.setState(prevState => ({
-        ...prevState,
+      this.setState(previousState => ({
+        ...previousState,
         selected: prevState.selected
       }
       ));
     }
-    console.log("state", this.state)
+    // console.log(this.state.selected.dataset)
   }
 
   makeRequest(event, type) {
@@ -70,8 +76,6 @@ class Toprow extends Component {
     var params = {};
     url.pathname += type;
 
-    // let group = this.state.items.groups[event.args.index]["label"];
-    // let dataset = this.state.items.groups[event.args.index]["label"];
     // create the correct request based on the type parameter
     switch (type) {
       case "groups":
@@ -94,7 +98,6 @@ class Toprow extends Component {
       url.searchParams.append(key, params[key])
     );
 
-    console.log(url);
     // fetch the url
     // .then function chaining
     fetch(url)
