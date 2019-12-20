@@ -9,8 +9,8 @@ class Toprow extends Component {
     this.state = {
       error: null,
       isLoaded: false,
-      items: [],
-      selected: []
+      items: {},
+      selected: {}
     }
 
     this.onSelect = this.onSelect.bind(this)
@@ -21,55 +21,46 @@ class Toprow extends Component {
   }
 
   onSelect (event) {
-    // console.log("select", event)
-
-    const element = event.args.item.originalItem
-    const type = element.type
-    var prevState = this.state
+    const eventItem = event.args.item.originalItem
+    const category = eventItem.type
+    var prevStateSelected = this.state.selected
 
     /// add new item to the previous state based on the new selection
-    if (this.state.selected[type] !== undefined) {
-      prevState.selected[type].push(element.label)
+    if (this.state.selected[category] !== undefined) {
+      prevStateSelected[category].push(eventItem.label)
     } else {
-      prevState.selected[type] = [element.label]
+      prevStateSelected[category] = [eventItem.label]
     }
 
     // update the state.selected to reflect the new selected items
     this.setState(previousState => ({
       ...previousState,
-      selected: prevState.selected
+      selected: prevStateSelected
     }))
-    // console.log(this.state.selected.dataset)
   }
 
   onUnselect (event) {
-    console.log('unselect', event)
     const item = event.args.item
-    // console.log("item ", item)
+
     if (item !== null) {
-      var element = item.originalItem
-      const type = element.type
-      var prevState = this.state
-      console.log('this.state.selected[type] ', this.state.selected[type])
+      var eventItem = item.originalItem
+      const category = eventItem.type
+      var prevStateSelected = this.state.selected
 
       /// add new item to the previous state based on the new selection
-      if (this.state.selected[type] !== undefined) {
+      if (this.state.selected[category] !== undefined) {
         // find find correct list_index to remove
-        const listIndex = prevState.selected[type].indexOf(element.label)
+        const listIndex = prevStateSelected[category].indexOf(eventItem.label)
         // remove list_index from prevState
-        prevState.selected[type].splice(listIndex, 1)
+        prevStateSelected[category].splice(listIndex, 1)
       } else {
-        // pass
       }
-
       // update the state.selected to reflect the new selected items
       this.setState(previousState => ({
         ...previousState,
-        selected: prevState.selected
-      }
-      ))
+        selected: prevStateSelected
+      }))
     }
-    // console.log(this.state.selected.dataset)
   }
 
   makeRequest (event, type) {
@@ -133,7 +124,6 @@ class Toprow extends Component {
           onSelect={this.onSelect}
           onUnselect={this.onUnselect}
         />
-
       )
     }
 
@@ -141,6 +131,7 @@ class Toprow extends Component {
       <div>
         <span>
           <JqxListBox
+            key = {'groups'}
             source={this.state.items.groups}
             multipleextended={false}
             onChange={e => this.makeRequest(e, 'dataset')}
@@ -148,6 +139,7 @@ class Toprow extends Component {
             onUnselect={this.onUnselect}
           />
           <JqxListBox
+            key = {'dataset'}
             source={this.state.items.dataset}
             multipleextended={false}
             onChange={e => this.makeRequest(e, 'meta')}
