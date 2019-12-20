@@ -44,7 +44,6 @@ class Toprow extends Component {
       const type = element.type;
       var prevState = this.state;
 
-
       /// add new item to the previous state based on the new selection
       if (this.state.selected[type] !== undefined) {
         // find find correct list_index to remove
@@ -63,10 +62,11 @@ class Toprow extends Component {
       }
       ));
     }
+    console.log("state", this.state)
   }
 
   makeRequest(event, type) {
-    var url = new URL("http://localhost:5000/api/");
+    var url = new URL("http://192.168.178.30:5000/api/");
     var params = {};
     url.pathname += type;
 
@@ -111,41 +111,50 @@ class Toprow extends Component {
   }
 
   componentDidMount() {
-    this.makeRequest("undefined", "groups");
+    this.makeRequest(undefined, "groups");
   }
 
   render() {
+    let metaListboxes;
     if (this.state.items.meta !== undefined) {
-      const meta_listboxes = <JqxListBox
-        source={this.state.items.meta.countries}
-        multipleextended={true}
-        onChange={e => this.makeRequest(e, "meta")}
-        onSelect={this.onSelect}
-        onUnselect={this.onUnselect} 
-        />
+      metaListboxes = this.state.items.meta
+
+      const keys = Object.keys(metaListboxes)
+
+      metaListboxes = keys.map(key =>
+          <JqxListBox
+            source={this.state.items.meta[key]}
+            multipleextended={true}
+            onSelect={this.onSelect}
+            onUnselect={this.onUnselect}
+          />
+
+      )
 
     }
+
     return (
       <div>
-        <JqxListBox
-          source={this.state.items.groups}
-          multipleextended={false}
-          onChange={e => this.makeRequest(e, "dataset")}
-          onSelect={this.onSelect}
-          onUnselect={this.onUnselect}
-        />
-        <JqxListBox
-          source={this.state.items.dataset}
-          multipleextended={false}
-          onChange={e => this.makeRequest(e, "meta")}
-          onSelect={this.onSelect}
-          onUnselect={this.onUnselect}
-        />
+        <span>
+          <JqxListBox
+            source={this.state.items.groups}
+            multipleextended={false}
+            onChange={e => this.makeRequest(e, "dataset")}
+            onSelect={this.onSelect}
+            onUnselect={this.onUnselect}
+          />
+          <JqxListBox
+            source={this.state.items.dataset}
+            multipleextended={false}
+            onChange={e => this.makeRequest(e, "meta")}
+            onSelect={this.onSelect}
+            onUnselect={this.onUnselect}
+          />
 
-        
-        {/* // create listboxes dynamically depending on the elements in this.state.items.meta */}
-        meta_listboxes;
-        
+          {/* // create listboxes dynamically depending on the elements in this.state.items.meta */}
+          {metaListboxes}
+
+        </span>
 
       </div>
     );
