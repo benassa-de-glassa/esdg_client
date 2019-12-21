@@ -20,3 +20,9 @@
 .App-link {
   color: #09d3ac;
 }
+
+
+.jqx-listbox {
+  /* get listboxes to be left to right not top to bottom */
+  display:inline-flex;
+}

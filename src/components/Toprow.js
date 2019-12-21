@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
@@ -41,7 +41,6 @@ class Toprow extends Component {
   }
 
   onUnselect (event) {
-
     if (event.args.item !== null) {
       const eventItem = event.args.item.originalItem
       const category = eventItem.type
@@ -140,7 +139,7 @@ class Toprow extends Component {
     }
 
     return (
-      <Fragment >
+      <span height={300}>
         <JqxListBox
           key={'groups'}
           source={this.state.items.groups}
@@ -164,7 +163,7 @@ class Toprow extends Component {
           height={30}
           onClick={this.onSubmit}> Submit
         </JqxButton>
-      </Fragment>
+      </span>
     )
   }
 }

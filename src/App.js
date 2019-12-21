@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import './App.css'
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css'
@@ -7,8 +7,12 @@ import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css'
 import Toprow from './components/Toprow.js'
 
 function App () {
+  var selected = {}
   return (
-    <Toprow selected={{}}/>
+    <Fragment >
+      <Toprow selected={selected} />
+      {/* <Datatable selected={selected} /> */}
+    </Fragment>
   )
 }
 
