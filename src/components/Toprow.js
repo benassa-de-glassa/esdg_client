@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
+import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
 import { API_URL } from '../paths.js'
 
@@ -15,6 +16,7 @@ class Toprow extends Component {
 
     this.onSelect = this.onSelect.bind(this)
     this.onUnselect = this.onUnselect.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
 
     this.makeRequest = this.makeRequest.bind(this)
     this.componentDidMount = this.componentDidMount.bind(this)
@@ -39,7 +41,6 @@ class Toprow extends Component {
   }
 
   onUnselect (event) {
-    console.log(event)
 
     if (event.args.item !== null) {
       const eventItem = event.args.item.originalItem
@@ -51,7 +52,6 @@ class Toprow extends Component {
       // remove list_index from prevState
       prevStateSelected[category].splice(listIndex, 1)
 
-      console.log('selected', this.state.selected)
       // update the state.selected to reflect the new selected items
       this.setState(previousState => ({
         ...previousState,
@@ -60,7 +60,11 @@ class Toprow extends Component {
     }
   }
 
-  makeRequest (event, type) {
+  onSubmit (event) {
+    this.makeRequest(undefined, 'data')
+  }
+
+  makeRequest (e, type) {
     var url = new URL(API_URL)
     var params = {}
     url.pathname += type
@@ -87,8 +91,11 @@ class Toprow extends Component {
           dataset: this.state.selected.dataset
         }
         break
+      case 'data':
+        Object.entries(this.state.selected).forEach(([key, value]) => (params[key] = value))
+        break
       default:
-        console.log('default')
+        console.log('this should not have happend')
     }
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
@@ -107,6 +114,7 @@ class Toprow extends Component {
           }
         }))
       })
+    // finally update the prop value
   }
 
   componentDidMount () {
@@ -122,7 +130,7 @@ class Toprow extends Component {
 
       metaListboxes = keys.map(key =>
         <JqxListBox
-          key = {key}
+          key={key}
           source={this.state.items.meta[key]}
           multipleextended={true}
           onSelect={this.onSelect}
@@ -132,31 +140,31 @@ class Toprow extends Component {
     }
 
     return (
-      <div>
-        <span>
-          <JqxListBox
-            key = {'groups'}
-            source={this.state.items.groups}
-            multipleextended={false}
-            onChange={e => this.makeRequest(e, 'dataset')}
-            onSelect={this.onSelect}
-            onUnselect={this.onUnselect}
-          />
-          <JqxListBox
-            key = {'dataset'}
-            source={this.state.items.dataset}
-            multipleextended={false}
-            onChange={e => this.makeRequest(e, 'meta')}
-            onSelect={this.onSelect}
-            onUnselect={this.onUnselect}
-          />
+      <Fragment >
+        <JqxListBox
+          key={'groups'}
+          source={this.state.items.groups}
+          multipleextended={false}
+          onChange={e => this.makeRequest(e, 'dataset')}
+          onSelect={this.onSelect}
+          onUnselect={this.onUnselect}
+        />
+        <JqxListBox
+          key={'dataset'}
+          source={this.state.items.dataset}
+          multipleextended={false}
+          onChange={e => this.makeRequest(e, 'meta')}
+          onSelect={this.onSelect}
+          onUnselect={this.onUnselect}
+        />
+        {metaListboxes}
 
-          {/* // create listboxes dynamically depending on the elements in this.state.items.meta */}
-          {metaListboxes}
-
-        </span>
-
-      </div>
+        <JqxButton
+          width={120}
+          height={30}
+          onClick={this.onSubmit}> Submit
+        </JqxButton>
+      </Fragment>
     )
   }
 }

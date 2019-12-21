@@ -8,7 +8,7 @@ import Toprow from './components/Toprow.js'
 
 function App () {
   return (
-    <Toprow />
+    <Toprow selected={{}}/>
   )
 }
 
