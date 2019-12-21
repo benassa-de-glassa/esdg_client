@@ -31,7 +31,6 @@ class Toprow extends Component {
     } else {
       prevStateSelected[category] = [eventItem.label]
     }
-
     // update the state.selected to reflect the new selected items
     this.setState(previousState => ({
       ...previousState,
@@ -40,21 +39,19 @@ class Toprow extends Component {
   }
 
   onUnselect (event) {
-    const item = event.args.item
+    console.log(event)
 
-    if (item !== null) {
-      var eventItem = item.originalItem
+    if (event.args.item !== null) {
+      const eventItem = event.args.item.originalItem
       const category = eventItem.type
       var prevStateSelected = this.state.selected
 
-      /// add new item to the previous state based on the new selection
-      if (this.state.selected[category] !== undefined) {
-        // find find correct list_index to remove
-        const listIndex = prevStateSelected[category].indexOf(eventItem.label)
-        // remove list_index from prevState
-        prevStateSelected[category].splice(listIndex, 1)
-      } else {
-      }
+      // find find correct list_index to remove
+      const listIndex = prevStateSelected[category].indexOf(eventItem.label)
+      // remove list_index from prevState
+      prevStateSelected[category].splice(listIndex, 1)
+
+      console.log('selected', this.state.selected)
       // update the state.selected to reflect the new selected items
       this.setState(previousState => ({
         ...previousState,
@@ -73,6 +70,13 @@ class Toprow extends Component {
       case 'groups':
         break
       case 'dataset':
+        // reset the state of selected datasets as the listbox has to be repopulated
+        var prevStateSelected = this.state.selected
+        prevStateSelected.dataset = []
+        this.setState(previousState => ({
+          ...previousState,
+          selected: prevStateSelected
+        }))
         params = {
           dataset: this.state.selected.groups
         }
