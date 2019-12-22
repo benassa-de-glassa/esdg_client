@@ -61,6 +61,7 @@ class Toprow extends Component {
 
   onSubmit (event) {
     this.makeRequest(undefined, 'data')
+    this.props.getSelected(this.state.selected)
   }
 
   makeRequest (e, type) {

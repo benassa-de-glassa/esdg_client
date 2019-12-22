@@ -1,18 +1,17 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import './App.css'
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css'
 // import 'jqwidgets-scripts/jqwidgets/styles/jqx.material-purple.css'
 
-import Toprow from './components/Toprow.js'
+import MainPage from './components/MainPage';
 
 function App () {
-  var selected = {}
   return (
-    <Fragment >
-      <Toprow selected={selected} />
+    <MainPage >
+      {/* <Toprow selected={selected} /> */}
       {/* <Datatable selected={selected} /> */}
-    </Fragment>
+    </MainPage>
   )
 }
 
