@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import Toprow from './Toprow.js'
+import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 
 import { API_URL } from '../paths.js'
 
@@ -20,7 +21,6 @@ class MainPage extends Component {
       ...previousState,
       selected: selected
     }))
-
     this.getData(selected)
   }
 
@@ -42,17 +42,26 @@ class MainPage extends Component {
       .then(res => {
         this.setState(previousState => ({
           ...previousState,
-          data: res
+          datafields: res.header,
+          data: res.data,
+          columns: res.columns,
         }))
       })
   }
 
   render () {
+    var source = new jqx.dataAdapter(
+      {
+        datatype: 'json',
+        localdata: this.state.data,
+        datafields: this.state.datafields
+      }
+    )
     return (
       <div>
         <h1> ESDG</h1>
         <Toprow getSelected={this.getSelected} />
-
+        <JqxGrid source={source} columns={this.state.columns}/>
       </div>
     )
   }
