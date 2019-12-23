@@ -46,21 +46,32 @@ class Toprow extends Component {
       const category = eventItem.type
       var prevStateSelected = this.state.selected
 
+      if (prevStateSelected[category] !== undefined) {
       // find find correct list_index to remove
-      const listIndex = prevStateSelected[category].indexOf(eventItem.label)
-      // remove list_index from prevState
-      prevStateSelected[category].splice(listIndex, 1)
-
-      // update the state.selected to reflect the new selected items
-      this.setState(previousState => ({
-        ...previousState,
-        selected: prevStateSelected
-      }))
+        const listIndex = prevStateSelected[category].indexOf(eventItem.label)
+        // remove list_index from prevState
+        prevStateSelected[category].splice(listIndex, 1)
+        // update the state.selected to reflect the new selected items
+        this.setState(previousState => ({
+          ...previousState,
+          selected: prevStateSelected
+        }))
+      }
     }
   }
 
   onSubmit (event) {
     this.props.getSelected(this.state.selected)
+
+    // reset the state after submission to avoid any residual dimensions fucking up the state and thereby any future request
+    this.setState(previousState => ({
+      ...previousState,
+      selected: {
+        groups: previousState.selected.groups,
+        dataset: previousState.selected.dataset
+      }
+    }
+    ))
   }
 
   makeRequest (e, type) {
