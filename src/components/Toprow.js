@@ -61,17 +61,17 @@ class Toprow extends Component {
   }
 
   onSubmit (event) {
-    this.props.getSelected(this.state.selected)
+    this.props.getSelected(this.state.selected, Object.keys(this.state.items.meta))
 
     // reset the state after submission to avoid any residual dimensions fucking up the state and thereby any future request
-    this.setState(previousState => ({
-      ...previousState,
-      selected: {
-        groups: previousState.selected.groups,
-        dataset: previousState.selected.dataset
-      }
-    }
-    ))
+    // this.setState(previousState => ({
+    //   ...previousState,
+    //   selected: {
+    //     groups: previousState.selected.groups,
+    //     dataset: previousState.selected.dataset
+    //   }
+    // }
+    // ))
   }
 
   makeRequest (e, type) {
@@ -102,7 +102,7 @@ class Toprow extends Component {
         }
         break
       case 'data':
-        Object.entries(this.state.selected).forEach(([key, value]) => (params[key] = value))
+        // Object.entries(this.state.selected).forEach(([key, value]) => (params[key] = value))
         break
       default:
         console.log('this should not have happend')
@@ -139,6 +139,7 @@ class Toprow extends Component {
       const keys = Object.keys(metaListboxes)
 
       metaListboxes = keys.map(key =>
+
         <JqxListBox
           key={key}
           source={this.state.items.meta[key]}

@@ -16,10 +16,11 @@ class MainPage extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  getSelected (selected) {
+  getSelected (selected, dimensions) {
     this.setState(previousState => ({
       ...previousState,
-      selected: selected
+      selected: selected,
+      dimensions: dimensions
     }))
     this.getData(selected)
   }
@@ -30,8 +31,11 @@ class MainPage extends Component {
     url.pathname += 'data'
 
     // create the request
-    var params = {}
-    Object.entries(selected).forEach(([key, value]) => (params[key] = value))
+    var params = {
+      groups: this.state.selected.groups,
+      dataset: this.state.selected.dataset
+    }
+    Object.values(this.state.dimensions).forEach(key => (params[key] = this.state.selected[key]))
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
     )
@@ -44,7 +48,7 @@ class MainPage extends Component {
           ...previousState,
           datafields: res.header,
           data: res.data,
-          columns: res.columns,
+          columns: res.columns
         }))
       })
   }
