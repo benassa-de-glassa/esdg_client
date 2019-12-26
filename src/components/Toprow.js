@@ -10,68 +10,36 @@ class Toprow extends Component {
     this.state = {
       error: null,
       isLoaded: false,
-      items: {},
-      selected: {}
+      items: {}
     }
 
-    this.onSelect = this.onSelect.bind(this)
-    this.onUnselect = this.onUnselect.bind(this)
+    // this.onSelect = this.onSelect.bind(this)
+    // this.onUnselect = this.onUnselect.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.addSelectRef = this.addSelectRef.bind(this)
 
     this.makeRequest = this.makeRequest.bind(this)
     this.componentDidMount = this.componentDidMount.bind(this)
   }
 
-  onSelect (event) {
-    const eventItem = event.args.item.originalItem
-    const category = eventItem.type
-    var prevStateSelected = this.state.selected
-
-    /// add new item to the previous state based on the new selection
-    if (this.state.selected[category] !== undefined) {
-      prevStateSelected[category].push(eventItem.label)
-    } else {
-      prevStateSelected[category] = [eventItem.label]
-    }
-    // update the state.selected to reflect the new selected items
-    this.setState(previousState => ({
-      ...previousState,
-      selected: prevStateSelected
-    }))
-  }
-
-  onUnselect (event) {
-    if (event.args.item !== null) {
-      const eventItem = event.args.item.originalItem
-      const category = eventItem.type
-      var prevStateSelected = this.state.selected
-
-      if (prevStateSelected[category] !== undefined) {
-      // find find correct list_index to remove
-        const listIndex = prevStateSelected[category].indexOf(eventItem.label)
-        // remove list_index from prevState
-        prevStateSelected[category].splice(listIndex, 1)
-        // update the state.selected to reflect the new selected items
-        this.setState(previousState => ({
-          ...previousState,
-          selected: prevStateSelected
-        }))
-      }
-    }
-  }
-
   onSubmit (event) {
-    this.props.getSelected(this.state.selected, Object.keys(this.state.items.meta))
+    var selection = {
+      groups: this.state.references.groups.getSelectedItem().label,
+      dataset: this.state.references.dataset.getSelectedItem().label
+    }
 
-    // reset the state after submission to avoid any residual dimensions fucking up the state and thereby any future request
-    // this.setState(previousState => ({
-    //   ...previousState,
-    //   selected: {
-    //     groups: previousState.selected.groups,
-    //     dataset: previousState.selected.dataset
-    //   }
-    // }
-    // ))
+    Object.keys(this.state.items.meta).forEach(
+      (key) => {
+        var tempList = []
+        Object.values(this.state.references[key].getSelectedItems()).forEach(
+          (values) => {
+            tempList.push(values.label)
+          }
+        )
+        selection[key] = tempList
+      }
+    )
+    this.props.getSelected(selection)
   }
 
   makeRequest (e, type) {
@@ -84,25 +52,17 @@ class Toprow extends Component {
       case 'groups':
         break
       case 'dataset':
-        // reset the state of selected datasets as the listbox has to be repopulated
-        var prevStateSelected = this.state.selected
-        prevStateSelected.dataset = []
-        this.setState(previousState => ({
-          ...previousState,
-          selected: prevStateSelected
-        }))
         params = {
-          dataset: this.state.selected.groups
+          groups: this.state.references.groups.getSelectedItem().label
         }
         break
       case 'meta':
         params = {
-          groups: this.state.selected.groups,
-          dataset: this.state.selected.dataset
+          groups: this.state.references.groups.getSelectedItem().label,
+          dataset: this.state.references.dataset.getSelectedItem().label
         }
         break
       case 'data':
-        // Object.entries(this.state.selected).forEach(([key, value]) => (params[key] = value))
         break
       default:
         console.log('this should not have happend')
@@ -127,6 +87,19 @@ class Toprow extends Component {
     // finally update the prop value
   }
 
+  addSelectRef (element) {
+    if (element !== null) {
+      const key = element._reactInternalFiber.key
+      this.setState(previousState => ({
+        ...previousState,
+        references: {
+          ...previousState.references,
+          [key]: element
+        }
+      }))
+    }
+  }
+
   componentDidMount () {
     this.makeRequest(undefined, 'groups')
   }
@@ -139,34 +112,30 @@ class Toprow extends Component {
       const keys = Object.keys(metaListboxes)
 
       metaListboxes = keys.map(key =>
-
         <JqxListBox
+          ref={this.addSelectRef}
           key={key}
           source={this.state.items.meta[key]}
           multipleextended={true}
-          onSelect={this.onSelect}
-          onUnselect={this.onUnselect}
         />
       )
     }
 
     return (
-      <span height={300}>
+      <div>
         <JqxListBox
           key={'groups'}
+          ref={this.addSelectRef}
           source={this.state.items.groups}
           multipleextended={false}
           onChange={e => this.makeRequest(e, 'dataset')}
-          onSelect={this.onSelect}
-          onUnselect={this.onUnselect}
         />
         <JqxListBox
           key={'dataset'}
+          ref={this.addSelectRef}
           source={this.state.items.dataset}
           multipleextended={false}
           onChange={e => this.makeRequest(e, 'meta')}
-          onSelect={this.onSelect}
-          onUnselect={this.onUnselect}
         />
         {metaListboxes}
 
@@ -175,7 +144,7 @@ class Toprow extends Component {
           height={30}
           onClick={this.onSubmit}> Submit
         </JqxButton>
-      </span>
+      </div>
     )
   }
 }

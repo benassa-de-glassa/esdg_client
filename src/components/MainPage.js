@@ -16,12 +16,8 @@ class MainPage extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  getSelected (selected, dimensions) {
-    this.setState(previousState => ({
-      ...previousState,
-      selected: selected,
-      dimensions: dimensions
-    }))
+  getSelected (selected) {
+    this.setState({ selected: selected })
     this.getData(selected)
   }
 
@@ -30,12 +26,14 @@ class MainPage extends Component {
     var url = new URL(API_URL)
     url.pathname += 'data'
 
-    // create the request
+    // create the request parameters
     var params = {
       groups: this.state.selected.groups,
       dataset: this.state.selected.dataset
     }
-    Object.values(this.state.dimensions).forEach(key => (params[key] = this.state.selected[key]))
+    Object.keys(this.state.selected).forEach(key => (params[key] = this.state.selected[key]))
+
+    // add parameters to url search parameters
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
     )
