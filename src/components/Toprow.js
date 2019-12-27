@@ -13,8 +13,6 @@ class Toprow extends Component {
       items: {}
     }
 
-    // this.onSelect = this.onSelect.bind(this)
-    // this.onUnselect = this.onUnselect.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.addSelectRef = this.addSelectRef.bind(this)
 
@@ -44,9 +42,9 @@ class Toprow extends Component {
 
   makeRequest (e, type) {
     var url = new URL(API_URL)
-    var params = {}
     url.pathname += type
 
+    var params = {}
     // create the correct request based on the type parameter
     switch (type) {
       case 'groups':
@@ -61,8 +59,6 @@ class Toprow extends Component {
           groups: this.state.references.groups.getSelectedItem().label,
           dataset: this.state.references.dataset.getSelectedItem().label
         }
-        break
-      case 'data':
         break
       default:
         console.log('this should not have happend')
@@ -84,7 +80,6 @@ class Toprow extends Component {
           }
         }))
       })
-    // finally update the prop value
   }
 
   addSelectRef (element) {
