@@ -26,3 +26,11 @@
   /* get listboxes to be left to right not top to bottom */
   display:inline-flex;
 }
+
+.toprow-div {
+  overflow:auto;
+}
+
+.listbox-div {
+  float: left;
+}

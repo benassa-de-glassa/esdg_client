@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
@@ -66,6 +66,7 @@ class Toprow extends Component {
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
     )
+    console.log(url)
 
     // fetch the url
     // .then function chaining
@@ -107,39 +108,56 @@ class Toprow extends Component {
       const keys = Object.keys(metaListboxes)
 
       metaListboxes = keys.map(key =>
-        <JqxListBox
-          ref={this.addSelectRef}
-          key={key}
-          source={this.state.items.meta[key]}
-          multipleextended={true}
-        />
+        <div key={key} className="listbox-div">
+          {key}<br/>
+          <JqxListBox
+            ref={this.addSelectRef}
+            key={key}
+            source={this.state.items.meta[key]}
+            multipleextended={true}
+          />
+        </div>
       )
     }
 
     return (
-      <div>
-        <JqxListBox
-          key={'groups'}
-          ref={this.addSelectRef}
-          source={this.state.items.groups}
-          multipleextended={false}
-          onChange={e => this.makeRequest(e, 'dataset')}
-        />
-        <JqxListBox
-          key={'dataset'}
-          ref={this.addSelectRef}
-          source={this.state.items.dataset}
-          multipleextended={false}
-          onChange={e => this.makeRequest(e, 'meta')}
-        />
-        {metaListboxes}
+      <Fragment>
+        <div className="toprow-div">
+          <div className="listbox-div">
+          groups <br/>
+            <JqxListBox
+              className="listbox-div"
+              key={'groups'}
+              ref={this.addSelectRef}
+              source={this.state.items.groups}
+              multipleextended={false}
+              onChange={e => this.makeRequest(e, 'dataset')}
+            />
+          </div>
+          <div className="listbox-div">
+          dataset <br/>
+            <JqxListBox
+              className="listbox-div"
+              key={'dataset'}
+              ref={this.addSelectRef}
+              source={this.state.items.dataset}
+              multipleextended={false}
+              onChange={e => this.makeRequest(e, 'meta')}
+            />
+          </div>
 
-        <JqxButton
-          width={120}
-          height={30}
-          onClick={this.onSubmit}> Submit
-        </JqxButton>
-      </div>
+          {metaListboxes}
+        </div>
+
+        <div>
+          <JqxButton
+            width={120}
+            height={30}
+            onClick={this.onSubmit}>
+              Submit
+          </JqxButton>
+        </div>
+      </Fragment>
     )
   }
 }
