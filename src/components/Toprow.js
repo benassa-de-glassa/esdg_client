@@ -99,10 +99,24 @@ class Toprow extends Component {
 
   toggleSelection (e, key) {
     const ref = this.state.references[key]
-    console.log(ref, key)
-    console.log(ref.getItems())
-    for (const value in ref.getItems()) {
-      ref.selectIndex(value)
+    const items = ref.getItems()
+    const selectedItems = ref.getSelectedItems()
+
+    if (e.type === 'checked') {
+      // first unselect all items (by using ref.selectIndex, weird behaviour of this function)
+      // then select all
+      for (const value in selectedItems) {
+        const index = selectedItems[value].visibleIndex
+        ref.selectIndex(index)
+      }
+      for (const value in items) {
+        ref.selectIndex(value)
+      }
+    } else {
+      // unselect all items.. works as intended..
+      for (const value in items) {
+        ref.unselectIndex(value)
+      }
     }
   }
 
