@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
+import JqxCheckBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxcheckbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
 import { API_URL } from '../paths.js'
@@ -15,6 +16,7 @@ class Toprow extends Component {
 
     this.onSubmit = this.onSubmit.bind(this)
     this.addSelectRef = this.addSelectRef.bind(this)
+    this.toggleSelection = this.toggleSelection.bind(this)
 
     this.makeRequest = this.makeRequest.bind(this)
     this.componentDidMount = this.componentDidMount.bind(this)
@@ -66,7 +68,6 @@ class Toprow extends Component {
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key])
     )
-    console.log(url)
 
     // fetch the url
     // .then function chaining
@@ -96,6 +97,29 @@ class Toprow extends Component {
     }
   }
 
+  toggleSelection (e, key) {
+    const ref = this.state.references[key]
+    const items = ref.getItems()
+    const selectedItems = ref.getSelectedItems()
+
+    if (e.type === 'checked') {
+      // first unselect all items (by using ref.selectIndex, weird behaviour of this function)
+      // then select all
+      for (const value in selectedItems) {
+        const index = selectedItems[value].visibleIndex
+        ref.selectIndex(index)
+      }
+      for (const value in items) {
+        ref.selectIndex(value)
+      }
+    } else {
+      // unselect all items.. works as intended..
+      for (const value in items) {
+        ref.unselectIndex(value)
+      }
+    }
+  }
+
   componentDidMount () {
     this.makeRequest(undefined, 'groups')
   }
@@ -116,6 +140,10 @@ class Toprow extends Component {
             source={this.state.items.meta[key]}
             multipleextended={true}
           />
+          <JqxCheckBox
+            onChecked={e => this.toggleSelection(e, key)}
+            onUnchecked={e => this.toggleSelection(e, key)}
+          > Select all Items </JqxCheckBox>
         </div>
       )
     }
