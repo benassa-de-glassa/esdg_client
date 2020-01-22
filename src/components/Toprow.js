@@ -33,7 +33,7 @@ class Toprow extends Component {
         var tempList = []
         Object.values(this.state.references[key].getSelectedItems()).forEach(
           (values) => {
-            tempList.push(values.label)
+            tempList.push(values.value)
           }
         )
         selection[key] = tempList

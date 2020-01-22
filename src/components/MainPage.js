@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 
 import Toprow from './Toprow.js'
-import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 import Plot from 'react-plotly.js'
 
 import { API_URL } from '../paths.js'
+import DataTable from './DataTable.js'
 
 class MainPage extends Component {
   constructor (props) {
@@ -49,9 +49,8 @@ class MainPage extends Component {
       .then(res => {
         this.setState(previousState => ({
           ...previousState,
-          datafields: res.header,
-          data: res.data,
-          columns: res.columns
+          header: res.header,
+          data: res.data
         }))
       })
   }
@@ -72,17 +71,9 @@ class MainPage extends Component {
   }
 
   render () {
-    var source = new jqx.dataAdapter(
-      {
-        datatype: 'json',
-        localdata: this.state.data,
-        datafields: this.state.datafields
-      }
-    )
-
     let centralElement
     if (this.state.view === 'grid') {
-      centralElement = <JqxGrid source={source} columns={this.state.columns}/>
+      centralElement = <DataTable columns={this.state.header} data={this.state.data}/>
     } else if (this.state.view === 'plot') {
       centralElement =
       <Plot
@@ -104,7 +95,6 @@ class MainPage extends Component {
         <h1> ESDG</h1>
         <Toprow getSelected={this.getSelected} />
         { centralElement }
-        {/* <JqxGrid source={source} columns={this.state.columns}/> */}
         <JqxButton onClick={this.changeCentralElement} width = {300}> Change central Element</JqxButton>
       </div>
 
