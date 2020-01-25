@@ -21,8 +21,12 @@ class MainPage extends Component {
     this.changeCentralElement = this.changeCentralElement.bind(this)
   }
 
-  getSelected (selected) {
-    this.setState({ selected: selected })
+  getSelected (selected, meta, conversion) {
+    this.setState({
+      selected: selected,
+      meta: meta,
+      conversion: conversion
+    })
     this.getData(selected)
   }
 
@@ -73,7 +77,7 @@ class MainPage extends Component {
   render () {
     let centralElement
     if (this.state.view === 'grid') {
-      centralElement = <DataTable columns={this.state.header} data={this.state.data}/>
+      centralElement = <DataTable columns={this.state.header} data={this.state.data} codes={this.state.conversion}/>
     } else if (this.state.view === 'plot') {
       centralElement =
       <Plot

@@ -39,7 +39,7 @@ class Toprow extends Component {
         selection[key] = tempList
       }
     )
-    this.props.getSelected(selection)
+    this.props.getSelected(selection, this.state.items.meta, this.state.items.conversion)
   }
 
   makeRequest (e, type) {
@@ -78,10 +78,12 @@ class Toprow extends Component {
           ...prevState,
           items: {
             ...prevState.items,
-            [type]: res[type]
+            [type]: res[type],
+            conversion: res.conversion
           }
         }))
       })
+    console.log(this.state)
   }
 
   addSelectRef (element) {
