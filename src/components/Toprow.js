@@ -3,6 +3,8 @@ import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxCheckBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxcheckbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
+import {addLabelAndValueKeysToObject} from '../util/toObject'
+
 import { API_URL } from '../paths.js'
 
 class Toprow extends Component {
@@ -33,13 +35,13 @@ class Toprow extends Component {
         var tempList = []
         Object.values(this.state.references[key].getSelectedItems()).forEach(
           (values) => {
-            tempList.push(values.value)
+            tempList.push(values.originalItem.key)
           }
         )
         selection[key] = tempList
       }
     )
-    this.props.getSelected(selection)
+    this.props.getSelected(selection, this.state.items.meta)
   }
 
   makeRequest (e, type) {
@@ -78,10 +80,27 @@ class Toprow extends Component {
           ...prevState,
           items: {
             ...prevState.items,
-            [type]: res[type]
+            [type]: res[type],
+            conversion: res.conversion
           }
         }))
       })
+    .then(res => {
+      if (type === 'meta') {
+      for (const key of Object.keys(this.state.items.meta)) {
+        this.setState(prevState => ({
+          ...prevState,
+          items: {
+            ...prevState.items,
+            meta: {
+              ...prevState.items.meta,
+              [key]: this.state.items.meta[key].map(addLabelAndValueKeysToObject)
+            }
+          }
+        }))
+      }
+    }
+  })
   }
 
   addSelectRef (element) {
@@ -131,13 +150,13 @@ class Toprow extends Component {
 
       const keys = Object.keys(metaListboxes)
 
-      metaListboxes = keys.map(key =>
-        <div key={key} className="listbox-div">
+      metaListboxes = keys.map(key => {
+        return <div key={key} className="listbox-div">
           {key}<br/>
           <JqxListBox
             ref={this.addSelectRef}
             key={key}
-            source={this.state.items.meta[key]}
+            source={ this.state.items.meta[key]}
             multipleextended={true}
           />
           <JqxCheckBox
@@ -145,6 +164,7 @@ class Toprow extends Component {
             onUnchecked={e => this.toggleSelection(e, key)}
           > Select all Items </JqxCheckBox>
         </div>
+      }
       )
     }
 

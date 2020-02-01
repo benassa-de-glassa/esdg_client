@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 
 import Toprow from './Toprow.js'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
-import Plot from 'react-plotly.js'
 
 import { API_URL } from '../paths.js'
 import DataTable from './DataTable.js'
+import ScatterPlot from './ScatterPlot.js'
 
 class MainPage extends Component {
   constructor (props) {
@@ -21,8 +21,12 @@ class MainPage extends Component {
     this.changeCentralElement = this.changeCentralElement.bind(this)
   }
 
-  getSelected (selected) {
-    this.setState({ selected: selected })
+  getSelected (selected, meta, conversion) {
+    this.setState({
+      selected: selected,
+      meta: meta,
+      conversion: conversion
+    })
     this.getData(selected)
   }
 
@@ -32,16 +36,10 @@ class MainPage extends Component {
     url.pathname += 'data'
 
     // create the request parameters
-    var params = {
-      groups: this.state.selected.groups,
-      dataset: this.state.selected.dataset
-    }
+    var params = {}
     Object.keys(this.state.selected).forEach(key => (params[key] = this.state.selected[key]))
-
     // add parameters to url search parameters
-    Object.keys(params).forEach(key =>
-      url.searchParams.append(key, params[key])
-    )
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     // fetch the url
     // .then function chaining
     fetch(url)
@@ -73,22 +71,10 @@ class MainPage extends Component {
   render () {
     let centralElement
     if (this.state.view === 'grid') {
-      centralElement = <DataTable columns={this.state.header} data={this.state.data}/>
+      centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta}/>
     } else if (this.state.view === 'plot') {
-      centralElement =
-      <Plot
-        data={[
-          {
-            x: [1, 2, 3],
-            y: [2, 6, 3],
-            type: 'scatter',
-            mode: 'lines+points',
-            marker: { color: 'red' }
-          },
-          { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] }
-        ]}
-        layout={ { width: 320, height: 240, title: 'A Fancy Plot' } }
-      />
+      centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+
     }
     return (
       <div>

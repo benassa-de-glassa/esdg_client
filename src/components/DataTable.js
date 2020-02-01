@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
 import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 
 import { arraysToObject } from '../util/toObject'
 
 export default class DataTable extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    this.state = {
-    }
+    this.state = {}
     this.dataConverter = this.dataConverter.bind(this)
   }
 
-  dataConverter () {
+  dataConverter() {
     if (this.props.columns !== undefined) {
       var datafields = []
       var columns = []
@@ -31,54 +30,68 @@ export default class DataTable extends Component {
         }
       )
 
-      var localdata = []
+    var localdata = []
 
-      for (const [key, value] of Object.entries(this.props.data)) {
-        console.log(key)
-        Object.values(value).forEach(
-          arr =>
-            localdata.push(
-              arraysToObject(this.props.columns, arr)
-            )
+      for (var row of Object.values(this.props.data)) {
+        // replace the dimension codes with the dimension labels as shown given in the props.meta object
+        const rowCopy = [...row];
+        for (const key of Object.keys(this.props.conversion)) {
+          // create a dictionary like object from the conversion 
+          var conversionObject = {}
+          this.props.conversion[key].forEach(obj =>
+            conversionObject[obj.key] = obj.value,
+          )
+          // get the correct column from the columns prop
+          const column_index = this.props.columns.indexOf(key)
+          // assign the correct value based on the received code
+          rowCopy[column_index] = conversionObject[parseInt(row[column_index])]
+        }
+
+        // put localdata in the right format for the jqxgrid
+        localdata.push(
+          arraysToObject(this.props.columns, rowCopy)
         )
       }
 
-      // eslint-disable-next-line
-    var source = new jqx.dataAdapter(
+      var source = new jqx.dataAdapter(
         {
           datatype: 'json',
           localdata: localdata,
           datafields: datafields
         }
       )
-
-      this.setState({
-        columns: columns,
-        source: source
-      })
     }
 
-    // return source
-  }
+    // eslint-disable-next-line
+    var source = new jqx.dataAdapter(
+      {
+        datatype: 'json',
+        localdata: localdata,
+        datafields: datafields
+      }
+    )
 
-  componentDidUpdate (prevState) {
+    this.setState({
+      columns: columns,
+      source: source
+    })
+  }
+  componentDidMount() {
+    this.dataConverter()
+  }
+  componentDidUpdate(prevState) {
     // Typical usage (don't forget to compare props):
     if (this.props.data !== prevState.data) {
       this.dataConverter()
     }
   }
 
-  render () {
-    let grid
-    if (this.state.source === undefined) {
-      grid = <JqxGrid source = {this.state.source} columns={this.state.columns}/>
-    } else {
-      grid = <JqxGrid source = {this.state.source} columns={this.state.columns}/>
-    }
+  render() {
+
     return (
-      <div >
-        {grid}
-      </div>
+      <Fragment >
+        <JqxGrid source={this.state.source} columns={this.state.columns} />
+      </Fragment>
     )
   }
 }
