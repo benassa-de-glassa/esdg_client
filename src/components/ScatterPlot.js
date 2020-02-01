@@ -63,7 +63,6 @@ class ScatterPlot extends Component {
 
         
         for (let index = 0; index < this.state.ydata.length; index++) {
-            console.log(this.state.labels[index].concat())
             dataList.push({
                 x: this.state.xdata,
                 y: this.state.ydata[index],
