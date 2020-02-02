@@ -74,9 +74,8 @@ class ScatterPlot extends Component {
 
     return (
       <Plot
-        data={
-          dataList
-        }
+        data={dataList}
+        config={{ editable: true }}
       />
     )
   }
