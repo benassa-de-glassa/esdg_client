@@ -6,6 +6,7 @@ import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 import { API_URL } from '../paths.js'
 import DataTable from './DataTable.js'
 import ScatterPlot from './ScatterPlot.js'
+import ButtonRow from './ButtonRow.js'
 
 class MainPage extends Component {
   constructor (props) {
@@ -17,6 +18,7 @@ class MainPage extends Component {
     }
     this.getSelected = this.getSelected.bind(this)
     this.getData = this.getData.bind(this)
+    this.getView = this.getView.bind(this)
 
     this.changeCentralElement = this.changeCentralElement.bind(this)
   }
@@ -53,6 +55,13 @@ class MainPage extends Component {
       })
   }
 
+  getView (newView) {
+    this.setState(previousState => ({
+      ...previousState,
+      view: newView
+    }))
+  }
+
   changeCentralElement () {
     if (this.state.view === 'grid') {
       this.setState(previousState => ({
@@ -80,7 +89,8 @@ class MainPage extends Component {
         <h1> ESDG</h1>
         <Toprow getSelected={this.getSelected} />
         {centralElement}
-        <JqxButton onClick={this.changeCentralElement} width={300}> Change central Element</JqxButton>
+        <ButtonRow onChange={this.getView} />
+        {/* <JqxButton onClick={this.changeCentralElement} width={300}> Change central Element</JqxButton> */}
       </div>
 
     )
