@@ -86,13 +86,19 @@ class MainPage extends Component {
     }
     return (
       <div>
-        <h1> ESDG</h1>
-        <Toprow getSelected={this.getSelected} />
-        {centralElement}
-        <ButtonRow onChange={this.getView} />
-        {/* <JqxButton onClick={this.changeCentralElement} width={300}> Change central Element</JqxButton> */}
+        <div >
+          <h1> ESDG</h1>
+        </div>
+        <div>
+          <Toprow getSelected={this.getSelected} />
+        </div>
+        <div>
+          {centralElement}
+        </div>
+        <div>
+          <ButtonRow onChange={this.getView} />
+        </div>
       </div>
-
     )
   }
 }

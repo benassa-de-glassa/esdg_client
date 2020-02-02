@@ -1,13 +1,18 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment as div } from 'react'
 
 import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 
 import { arraysToObject } from '../util/toObject'
+import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
 export default class DataTable extends Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+    }
+
+    this.myGrid = React.createRef()
+
     this.dataConverter = this.dataConverter.bind(this)
   }
 
@@ -90,9 +95,14 @@ export default class DataTable extends Component {
 
   render () {
     return (
-      <Fragment >
-        <JqxGrid source={this.state.source} columns={this.state.columns} />
-      </Fragment>
+      <div style={{ display: 'inline' }}>
+        <JqxGrid ref={this.myGrid} source={this.state.source} columns={this.state.columns} />
+
+        <div style={{ float: 'left' }}>
+          <JqxButton onClick={e => this.myGrid.current.exportdata('csv', 'data')} width={40}> export to csv </JqxButton>
+          <JqxButton onClick={e => this.myGrid.current.exportdata('xls', 'data')} width={40}> export to xls </JqxButton>
+        </div>
+      </div >
     )
   }
 }

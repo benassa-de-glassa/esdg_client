@@ -204,7 +204,7 @@ class Toprow extends Component {
       <Fragment>
         <div className="toprow-div">
           <div className="listbox-div">
-            groups <br />
+            Domain <br />
             <JqxListBox
               className="listbox-div"
               key={'groups'}
@@ -215,7 +215,7 @@ class Toprow extends Component {
             />
           </div>
           <div className="listbox-div">
-            dataset <br />
+            Dataset <br />
             <JqxListBox
               className="listbox-div"
               key={'dataset'}
@@ -225,7 +225,6 @@ class Toprow extends Component {
               onChange={e => this.makeRequest(e, 'meta')}
             />
           </div>
-
           {metaListboxes}
         </div>
 
