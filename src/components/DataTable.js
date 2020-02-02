@@ -5,13 +5,13 @@ import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 import { arraysToObject } from '../util/toObject'
 
 export default class DataTable extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {}
     this.dataConverter = this.dataConverter.bind(this)
   }
 
-  dataConverter() {
+  dataConverter () {
     if (this.props.columns !== undefined) {
       var datafields = []
       var columns = []
@@ -30,16 +30,16 @@ export default class DataTable extends Component {
         }
       )
 
-    var localdata = []
+      var localdata = []
 
       for (var row of Object.values(this.props.data)) {
         // replace the dimension codes with the dimension labels as shown given in the props.meta object
-        const rowCopy = [...row];
+        const rowCopy = [...row]
         for (const key of Object.keys(this.props.conversion)) {
-          // create a dictionary like object from the conversion 
+          // create a dictionary like object from the conversion
           var conversionObject = {}
           this.props.conversion[key].forEach(obj =>
-            conversionObject[obj.key] = obj.value,
+            conversionObject[obj.key] = obj.value
           )
           // get the correct column from the columns prop
           const column_index = this.props.columns.indexOf(key)
@@ -76,18 +76,19 @@ export default class DataTable extends Component {
       source: source
     })
   }
-  componentDidMount() {
+
+  componentDidMount () {
     this.dataConverter()
   }
-  componentDidUpdate(prevState) {
+
+  componentDidUpdate (prevState) {
     // Typical usage (don't forget to compare props):
     if (this.props.data !== prevState.data) {
       this.dataConverter()
     }
   }
 
-  render() {
-
+  render () {
     return (
       <Fragment >
         <JqxGrid source={this.state.source} columns={this.state.columns} />

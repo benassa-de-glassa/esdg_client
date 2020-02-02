@@ -71,17 +71,16 @@ class MainPage extends Component {
   render () {
     let centralElement
     if (this.state.view === 'grid') {
-      centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta}/>
+      centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
     } else if (this.state.view === 'plot') {
       centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
-
     }
     return (
       <div>
         <h1> ESDG</h1>
         <Toprow getSelected={this.getSelected} />
-        { centralElement }
-        <JqxButton onClick={this.changeCentralElement} width = {300}> Change central Element</JqxButton>
+        {centralElement}
+        <JqxButton onClick={this.changeCentralElement} width={300}> Change central Element</JqxButton>
       </div>
 
     )
