@@ -3,7 +3,7 @@ import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxCheckBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxcheckbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
-import {addLabelAndValueKeysToObject} from '../util/toObject'
+import { addLabelAndValueKeysToObject } from '../util/toObject'
 
 import { API_URL } from '../paths.js'
 
@@ -22,26 +22,29 @@ class Toprow extends Component {
 
     this.makeRequest = this.makeRequest.bind(this)
     this.componentDidMount = this.componentDidMount.bind(this)
+    this.submittable = this.submittable.bind(this)
   }
 
   onSubmit (event) {
-    var selection = {
-      groups: this.state.references.groups.getSelectedItem().label,
-      dataset: this.state.references.dataset.getSelectedItem().label
-    }
-
-    Object.keys(this.state.items.meta).forEach(
-      (key) => {
-        var tempList = []
-        Object.values(this.state.references[key].getSelectedItems()).forEach(
-          (values) => {
-            tempList.push(values.originalItem.key)
-          }
-        )
-        selection[key] = tempList
+    if (this.state.isSubmitable) {
+      var selection = {
+        groups: this.state.references.groups.getSelectedItem().label,
+        dataset: this.state.references.dataset.getSelectedItem().label
       }
-    )
-    this.props.getSelected(selection, this.state.items.meta)
+
+      Object.keys(this.state.items.meta).forEach(
+        (key) => {
+          var tempList = []
+          Object.values(this.state.references[key].getSelectedItems()).forEach(
+            (values) => {
+              tempList.push(values.originalItem.key)
+            }
+          )
+          selection[key] = tempList
+        }
+      )
+      this.props.getSelected(selection, this.state.items.meta)
+    }
   }
 
   makeRequest (e, type) {
@@ -85,22 +88,22 @@ class Toprow extends Component {
           }
         }))
       })
-    .then(res => {
-      if (type === 'meta') {
-      for (const key of Object.keys(this.state.items.meta)) {
-        this.setState(prevState => ({
-          ...prevState,
-          items: {
-            ...prevState.items,
-            meta: {
-              ...prevState.items.meta,
-              [key]: this.state.items.meta[key].map(addLabelAndValueKeysToObject)
-            }
+      .then(res => {
+        if (type === 'meta') {
+          for (const key of Object.keys(this.state.items.meta)) {
+            this.setState(prevState => ({
+              ...prevState,
+              items: {
+                ...prevState.items,
+                meta: {
+                  ...prevState.items.meta,
+                  [key]: this.state.items.meta[key].map(addLabelAndValueKeysToObject)
+                }
+              }
+            }))
           }
-        }))
-      }
-    }
-  })
+        }
+      })
   }
 
   addSelectRef (element) {
@@ -139,6 +142,24 @@ class Toprow extends Component {
     }
   }
 
+  submittable (event) {
+    // checks whether all listboxes have selected at least one item
+    var isSubmitable = false
+    var usedListboxes = 0
+    if (this.state.references !== undefined) {
+      for (const ref of Object.values(this.state.references)) {
+        usedListboxes += (ref.getSelectedItems().length > 0)
+      }
+      if (usedListboxes === Object.keys(this.state.references).length) {
+        isSubmitable = true
+      }
+      this.setState(previousState => ({
+        ...previousState,
+        isSubmitable: isSubmitable
+      }))
+    }
+  }
+
   componentDidMount () {
     this.makeRequest(undefined, 'groups')
   }
@@ -152,12 +173,13 @@ class Toprow extends Component {
 
       metaListboxes = keys.map(key => {
         return <div key={key} className="listbox-div">
-          {key}<br/>
+          {key}<br />
           <JqxListBox
             ref={this.addSelectRef}
             key={key}
-            source={ this.state.items.meta[key]}
+            source={this.state.items.meta[key]}
             multipleextended={true}
+            onChange={e => this.submittable(e)}
           />
           <JqxCheckBox
             onChecked={e => this.toggleSelection(e, key)}
@@ -172,7 +194,7 @@ class Toprow extends Component {
       <Fragment>
         <div className="toprow-div">
           <div className="listbox-div">
-          groups <br/>
+            groups <br />
             <JqxListBox
               className="listbox-div"
               key={'groups'}
@@ -183,7 +205,7 @@ class Toprow extends Component {
             />
           </div>
           <div className="listbox-div">
-          dataset <br/>
+            dataset <br />
             <JqxListBox
               className="listbox-div"
               key={'dataset'}
@@ -198,11 +220,11 @@ class Toprow extends Component {
         </div>
 
         <div>
-          <JqxButton
+          <JqxButton disabled={!this.state.isSubmitable}
             width={120}
             height={30}
             onClick={this.onSubmit}>
-              Submit
+            Submit
           </JqxButton>
         </div>
       </Fragment>
