@@ -35,6 +35,10 @@ export default class DataTable extends Component {
         }
       )
 
+      for (let index = 0; index < Object.keys(this.props.conversion).length - 1; index++) {
+        columns[index].pinned = true
+      }
+
       var localdata = []
 
       for (var row of Object.values(this.props.data)) {
@@ -47,9 +51,9 @@ export default class DataTable extends Component {
             conversionObject[obj.key] = obj.value
           )
           // get the correct column from the columns prop
-          const column_index = this.props.columns.indexOf(key)
+          const columnIndex = this.props.columns.indexOf(key)
           // assign the correct value based on the received code
-          rowCopy[column_index] = conversionObject[parseInt(row[column_index])]
+          rowCopy[columnIndex] = conversionObject[parseInt(row[columnIndex])]
         }
 
         // put localdata in the right format for the jqxgrid
@@ -95,10 +99,15 @@ export default class DataTable extends Component {
 
   render () {
     return (
-      <div style={{ display: 'inline' }}>
-        <JqxGrid ref={this.myGrid} source={this.state.source} columns={this.state.columns} />
+      <div style={{}}>
+        <JqxGrid
+          ref={this.myGrid}
+          source={this.state.source}
+          columns={this.state.columns}
+          columnsresize={true}
+        />
 
-        <div style={{ float: 'left' }}>
+        <div style={{ float: 'right' }}>
           <JqxButton onClick={e => this.myGrid.current.exportdata('csv', 'data')} width={40}> export to csv </JqxButton>
           <JqxButton onClick={e => this.myGrid.current.exportdata('xls', 'data')} width={40}> export to xls </JqxButton>
         </div>
