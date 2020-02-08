@@ -67,13 +67,6 @@ class Toprow extends Component {
           groups: this.state.references.groups.getSelectedItem().label,
           dataset: this.state.references.dataset.getSelectedItem().label
         }
-        // this.setState(prevState => ({
-        //   ...prevState,
-        //   references: {
-        //     groups: prevState.references.groups,
-        //     dataset: prevState.references.dataset
-        //   }
-        // }))
         break
       default:
         console.log('this should not have happend')
@@ -155,7 +148,6 @@ class Toprow extends Component {
     var isSubmitable = false
     var usedListboxes = 0
     if (this.state.references !== undefined) {
-      // for (const ref of Object.values(this.state.references)) {
       for (const key of Object.keys(this.state.items.meta)) {
         const ref = this.state.references[key]
         usedListboxes += (ref.getSelectedItems().length > 0)

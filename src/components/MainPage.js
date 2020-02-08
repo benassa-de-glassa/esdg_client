@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 
 import Toprow from './Toprow.js'
-import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
+import JqxLoader from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxloader'
 
 import { API_URL } from '../paths.js'
 import DataTable from './DataTable.js'
 import ScatterPlot from './ScatterPlot.js'
 import ButtonRow from './ButtonRow.js'
+import MapPlot from './MapPlot.js'
 
 class MainPage extends Component {
   constructor (props) {
@@ -16,6 +17,7 @@ class MainPage extends Component {
       data: {},
       view: 'grid'
     }
+    this.loadAnimator = React.createRef()
     this.getSelected = this.getSelected.bind(this)
     this.getData = this.getData.bind(this)
     this.getView = this.getView.bind(this)
@@ -24,6 +26,8 @@ class MainPage extends Component {
   }
 
   getSelected (selected, meta, conversion) {
+    this.loadAnimator.current.open()
+
     this.setState({
       selected: selected,
       meta: meta,
@@ -53,6 +57,9 @@ class MainPage extends Component {
           data: res.data
         }))
       })
+      .then(res =>
+        this.loadAnimator.current.close()
+      )
   }
 
   getView (newView) {
@@ -79,15 +86,27 @@ class MainPage extends Component {
 
   render () {
     let centralElement
-    if (this.state.view === 'grid') {
-      centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
-    } else if (this.state.view === 'plot') {
-      centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+    switch (this.state.view) {
+      case 'grid':
+        centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+        break
+      case 'plot':
+        centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+        break
+      case 'map':
+        centralElement = <MapPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
     }
+
     return (
       <div>
         <div >
           <h1> ESDG</h1>
+          <JqxLoader
+            ref={this.loadAnimator}
+            isModal={true}
+            width={90}
+            height={90}
+          />
         </div>
         <div>
           <Toprow getSelected={this.getSelected} />
