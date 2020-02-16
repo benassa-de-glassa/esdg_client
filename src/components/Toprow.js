@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+
 import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxCheckBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxcheckbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
@@ -231,6 +233,10 @@ class Toprow extends Component {
       </Fragment>
     )
   }
+}
+
+Toprow.propTypes = {
+  getSelected: PropTypes.func
 }
 
 export default Toprow

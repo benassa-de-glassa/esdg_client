@@ -1,4 +1,5 @@
 import React, { Component, Fragment as div } from 'react'
+import PropTypes from 'prop-types'
 
 import JqxGrid, { jqx } from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid'
 
@@ -114,4 +115,10 @@ export default class DataTable extends Component {
       </div >
     )
   }
+}
+
+DataTable.propTypes = {
+  columns: PropTypes.array,
+  data: PropTypes.object,
+  conversion: PropTypes.array
 }
