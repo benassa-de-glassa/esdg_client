@@ -24,5 +24,4 @@ yarn-error.log*
 
 # VSCODE settings
 .vscode/
-src/paths.js
 .env
