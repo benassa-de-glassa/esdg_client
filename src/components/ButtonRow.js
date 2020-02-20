@@ -31,6 +31,15 @@ export class ButtonRow extends Component {
             Plot
             </JqxButton>
           </td>
+          <td>
+            <JqxButton
+              width={120}
+              height={30}
+              onClick={e => this.props.onChange('map')}
+            >
+            Map
+            </JqxButton>
+          </td>
         </tr>
       </table>
     )
