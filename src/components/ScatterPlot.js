@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import Plot from 'react-plotly.js'
 
@@ -22,14 +23,11 @@ class ScatterPlot extends Component {
       const rowCopy = [...row]
       for (const key of Object.keys(this.props.conversion)) {
         // create a dictionary like object from the conversion
-        var conversionObject = {}
-        this.props.conversion[key].forEach(obj =>
-          conversionObject[obj.key] = obj.value
-        )
+        const conversionObject = this.props.conversion[key]
         // get the correct column from the columns prop
-        const column_index = this.props.columns.indexOf(key)
+        const columnIndex = this.props.columns.indexOf(key)
         // assign the correct value based on the received code
-        rowCopy[column_index] = conversionObject[parseInt(row[column_index])]
+        rowCopy[columnIndex] = conversionObject[row[columnIndex]]
       }
 
       const tempLabel = rowCopy.slice(0, Object.keys(this.props.conversion).length - 1)
@@ -79,6 +77,13 @@ class ScatterPlot extends Component {
       />
     )
   }
+}
+
+ScatterPlot.propTypes = {
+  columns: PropTypes.array,
+  data: PropTypes.object,
+  conversion: PropTypes.object,
+  selected: PropTypes.object
 }
 
 export default ScatterPlot
