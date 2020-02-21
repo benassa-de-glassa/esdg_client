@@ -118,7 +118,7 @@ class MapPlot extends Component {
         ...previousState,
         selectedDimension: {
           ...previousState.selectedDimension,
-          [key]: ref.value//{[ref.value]: ref.label}
+          [key]: ref.value
         }
       }))
 
@@ -175,8 +175,12 @@ class MapPlot extends Component {
   }
 
   componentDidUpdate (prevState) {
-    if (this.props.conversion !== prevState.conversion) {
+    if (this.props.data !== prevState.data) {
+      console.log('props did update')
       this.getCountryDimensions()
+      this.state.selectableDimensions.forEach(dimension => {
+        this.onDimensionSelect(undefined, dimension)
+      })
     }
   }
 
@@ -208,7 +212,7 @@ class MapPlot extends Component {
       title: '', // create title dynamically from selection
       geo: {// TODO: allow user to select these options
         showframe: false,
-        showcoastlines: false,
+        showcoastlines: true,
         projection: {
           type: 'robinson' 
         }
