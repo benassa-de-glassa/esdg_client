@@ -66,7 +66,11 @@ class Toprow extends Component {
         params = {
           groups: this.state.references.groups.getSelectedItem().label,
           dataset: this.state.references.dataset.getSelectedItem().label
-        }
+        }  
+        this.setState(previousState => ({
+          ...previousState,
+          isSubmitable:false
+        }))
         break
       default:
         console.log('this should not have happend')
