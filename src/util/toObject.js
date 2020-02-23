@@ -9,20 +9,20 @@ function arraysToObject (keyArray, valueArray) {
   return obj
 }
 
-function addLabelAndValueKeysToObject(object) {
+function addLabelAndValueKeysToObject (object) {
   // takes an object like: {key: value} and returns an object which looks like {value: value, key: key}
   var obj = {}
   for (const [key, value] of Object.entries(object)) {
-    obj['key'] = key
-    obj['value'] = value
+    obj.key = key
+    obj.value = value
   }
   return obj
 }
 
-function removeLabelAndValueKeysFromObject(object) {
+function removeLabelAndValueKeysFromObject (object) {
   var obj = {}
   obj[object.key] = obj[object.value]
   return obj
 }
 
-export { arraysToObject, addLabelAndValueKeysToObject, removeLabelAndValueKeysFromObject}
+export { arraysToObject, addLabelAndValueKeysToObject, removeLabelAndValueKeysFromObject }

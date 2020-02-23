@@ -112,8 +112,7 @@ class MapPlot extends Component {
       }))
 
       this.getValuesFromDimensionSelect()
-    }
-    else if (this.state.selectedDimension[key] !== ref.value) {
+    } else if (this.state.selectedDimension[key] !== ref.value) {
       this.setState(previousState => ({
         ...previousState,
         selectedDimension: {
@@ -126,7 +125,7 @@ class MapPlot extends Component {
     }
   }
 
-  getValuesFromDimensionSelect() {
+  getValuesFromDimensionSelect () {
     const columnIndices = this.state.selectableDimensions.map(
       dimension => this.props.columns.indexOf(dimension))
 
@@ -138,8 +137,8 @@ class MapPlot extends Component {
       var isGoodRow = true
       // iterate over all column indices
       for (const columnIndex of columnIndices) {
-        if (columnIndex == -1 ) {continue} // skip for year columns which are not matched
-        if (this.state.selectedDimension[this.props.columns[columnIndex]] === undefined) {continue} // skip for undefined dimension values e.g. when a dimension was not yet selected
+        if (columnIndex == -1) { continue } // skip for year columns which are not matched
+        if (this.state.selectedDimension[this.props.columns[columnIndex]] === undefined) { continue } // skip for undefined dimension values e.g. when a dimension was not yet selected
         if (row[columnIndex] != this.state.selectedDimension[this.props.columns[columnIndex]]) {
           isGoodRow = false // set flag to false if any dimension does not match the row
         }
@@ -147,19 +146,19 @@ class MapPlot extends Component {
       if (isGoodRow === true) reducedData.push(rowCopy)
     }
     // get the z data by choosing the data corresponding to the year
-    //first get the year dimension
+    // first get the year dimension
     const yearDimension = this.state.selectableDimensions[columnIndices.indexOf(-1)]
     // then find out in which column it is located
     const yearColumn = this.props.columns.indexOf(this.state.selectedDimension[yearDimension])
     // then map the column to a simple z array for the Plot component
     const z = reducedData.map(row => row[yearColumn])
-    
+
     // get the location data from each row
     // get the correct column
     const countryColumn = this.props.columns.indexOf(this.state.countryDimensions[0])
     // map the FAOSTAT codes to the ISO3 codes required for the plotly.js component
     const locations = reducedData.map(row => this.state.countryCodeConversion[row[countryColumn]])
-    
+
     this.setState(previousState => ({
       ...previousState,
       z: z,
@@ -179,7 +178,9 @@ class MapPlot extends Component {
       console.log('props did update')
       this.getCountryDimensions()
       this.state.selectableDimensions.forEach(dimension => {
-        this.onDimensionSelect(undefined, dimension)
+        if (this.state.ref !== undefined) {
+          this.onDimensionSelect(undefined, dimension)
+        }
       })
     }
   }
@@ -188,7 +189,6 @@ class MapPlot extends Component {
     const keys = this.state.selectableDimensions
 
     const dimensionalDropdownListboxes = keys.map(key => {
-
       return <div key={key} className="listbox-div">
         {key}<br />
         <JqxDropDownList
@@ -210,11 +210,11 @@ class MapPlot extends Component {
 
     var layout = {
       title: '', // create title dynamically from selection
-      geo: {// TODO: allow user to select these options
+      geo: { // TODO: allow user to select these options
         showframe: false,
         showcoastlines: true,
         projection: {
-          type: 'robinson' 
+          type: 'robinson'
         }
       }
     }
