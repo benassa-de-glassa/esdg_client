@@ -5,8 +5,6 @@ import JqxListBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxlistbox'
 import JqxCheckBox from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxcheckbox'
 import JqxButton from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons'
 
-import { addLabelAndValueKeysToObject } from '../util/toObject'
-
 import { API_URL } from '../paths.js'
 
 class Toprow extends Component {
@@ -37,13 +35,13 @@ class Toprow extends Component {
 
       Object.keys(this.state.items.meta).forEach(
         (key) => {
-          var tempList = []
+          var tempObject = {}
           Object.values(this.state.references[key].getSelectedItems()).forEach(
             (values) => {
-              tempList.push(values.originalItem.key)
+              tempObject[values.value] = values.label
             }
           )
-          selection[key] = tempList
+          selection[key] = tempObject
         }
       )
       this.props.getSelected(selection, this.state.items.meta)
@@ -69,6 +67,10 @@ class Toprow extends Component {
           groups: this.state.references.groups.getSelectedItem().label,
           dataset: this.state.references.dataset.getSelectedItem().label
         }
+        this.setState(previousState => ({
+          ...previousState,
+          isSubmitable: false
+        }))
         break
       default:
         console.log('this should not have happend')
@@ -86,21 +88,18 @@ class Toprow extends Component {
           ...prevState,
           items: {
             ...prevState.items,
-            [type]: res[type],
-            conversion: res.conversion
+            [type]: res[type]
           }
         }))
-      })
-      .then(res => {
         if (type === 'meta') {
           for (const key of Object.keys(this.state.items.meta)) {
-            this.setState(prevState => ({
-              ...prevState,
+            this.setState(previousState => ({
+              ...previousState,
               items: {
-                ...prevState.items,
+                ...previousState.items,
                 meta: {
-                  ...prevState.items.meta,
-                  [key]: this.state.items.meta[key].map(addLabelAndValueKeysToObject)
+                  ...previousState.items.meta,
+                  [key]: this.state.items.meta[key]
                 }
               }
             }))
@@ -171,9 +170,7 @@ class Toprow extends Component {
   render () {
     let metaListboxes
     if (this.state.items.meta !== undefined) {
-      metaListboxes = this.state.items.meta
-
-      const keys = Object.keys(metaListboxes)
+      const keys = Object.keys(this.state.items.meta)
 
       metaListboxes = keys.map(key => {
         return <div key={key} className="listbox-div">

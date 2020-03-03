@@ -25,12 +25,13 @@ class MainPage extends Component {
     this.changeCentralElement = this.changeCentralElement.bind(this)
   }
 
-  getSelected (selected, meta, conversion) {
+  getSelected (selected, conversion) {
+    // start the loading animator
     this.loadAnimator.current.open()
 
+    // set an initial state
     this.setState({
       selected: selected,
-      meta: meta,
       conversion: conversion
     })
     this.getData(selected)
@@ -43,7 +44,12 @@ class MainPage extends Component {
 
     // create the request parameters
     var params = {}
-    Object.keys(this.state.selected).forEach(key => (params[key] = this.state.selected[key]))
+
+    Object.keys(this.state.selected).forEach(dimension => {
+      params[dimension] = Object.keys(this.state.selected[dimension])
+    })
+    params.groups = this.state.selected.groups
+    params.dataset = this.state.selected.dataset
     // add parameters to url search parameters
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     // fetch the url
@@ -88,13 +94,13 @@ class MainPage extends Component {
     let centralElement
     switch (this.state.view) {
       case 'grid':
-        centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+        centralElement = <DataTable columns={this.state.header} data={this.state.data} conversion={this.state.conversion} />
         break
       case 'plot':
-        centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+        centralElement = <ScatterPlot columns={this.state.header} data={this.state.data} conversion={this.state.conversion} />
         break
       case 'map':
-        centralElement = <MapPlot columns={this.state.header} data={this.state.data} conversion={this.state.meta} />
+        centralElement = <MapPlot columns={this.state.header} data={this.state.data} conversion={this.state.conversion} selected={this.state.selected}/>
     }
 
     return (

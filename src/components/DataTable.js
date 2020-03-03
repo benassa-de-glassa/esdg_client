@@ -45,16 +45,14 @@ export default class DataTable extends Component {
       for (var row of Object.values(this.props.data)) {
         // replace the dimension codes with the dimension labels as shown given in the props.meta object
         const rowCopy = [...row]
+
         for (const key of Object.keys(this.props.conversion)) {
-          // create a dictionary like object from the conversion
-          var conversionObject = {}
-          this.props.conversion[key].forEach(obj =>
-            conversionObject[obj.key] = obj.value
-          )
-          // get the correct column from the columns prop
+          // get a dictionary like object from the conversion
+          const conversionObject = this.props.conversion[key]
+          // get the correct column
           const columnIndex = this.props.columns.indexOf(key)
           // assign the correct value based on the received code
-          rowCopy[columnIndex] = conversionObject[parseInt(row[columnIndex])]
+          rowCopy[columnIndex] = conversionObject[row[columnIndex]]
         }
 
         // put localdata in the right format for the jqxgrid
