@@ -41,6 +41,7 @@ export default class DataTable extends Component {
         columns[index].pinned = true
       }
 
+      // convert dimension codes to correct corresponding labels
       var localdata = []
 
       for (var row of Object.values(this.props.data)) {
@@ -91,7 +92,7 @@ export default class DataTable extends Component {
 
   render () {
     return (
-      <div style={{}}>
+      <div style={{ float: 'left' }}>
         <JqxGrid
           ref={this.myGrid}
           source={this.state.source}
@@ -99,7 +100,7 @@ export default class DataTable extends Component {
           columnsresize={true}
         />
 
-        <div style={{ float: 'right' }}>
+        <div>
           <JqxButton onClick={e => this.myGrid.current.exportdata('csv', 'data')} width={40}> export to csv </JqxButton>
           <JqxButton onClick={e => this.myGrid.current.exportdata('xls', 'data')} width={40}> export to xls </JqxButton>
         </div>
