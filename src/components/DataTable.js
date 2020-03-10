@@ -36,6 +36,7 @@ export default class DataTable extends Component {
         }
       )
 
+      // freezes the first couple columns to make horizontal scrolling more user friendly
       for (let index = 0; index < Object.keys(this.props.conversion).length - 1; index++) {
         columns[index].pinned = true
       }
@@ -60,14 +61,6 @@ export default class DataTable extends Component {
           arraysToObject(this.props.columns, rowCopy)
         )
       }
-
-      var source = new jqx.dataAdapter(
-        {
-          datatype: 'json',
-          localdata: localdata,
-          datafields: datafields
-        }
-      )
     }
 
     // eslint-disable-next-line
