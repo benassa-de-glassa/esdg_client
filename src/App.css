@@ -1,5 +1,5 @@
 div {
-  margin: 1px;
+  margin: 0px;
 }
 * {
   box-sizing: border-box;
@@ -7,12 +7,15 @@ div {
 .jqx-listbox {
   /* get listboxes to be left to right not top to bottom */
   display:inline-flex;
+  max-height: 250px;
+  /* max-width: 150px; */
 }
 
-.toprow-div {
+div.toprow {
   overflow:auto;
 }
 
-.listbox-div {
+div.listbox {
   float: left;
+  margin-left: 3px;
 }

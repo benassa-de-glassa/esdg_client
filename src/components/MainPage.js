@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-
-import Toprow from './Toprow.js'
 import JqxLoader from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxloader'
 
 import { API_URL } from '../paths.js'
+
+import Toprow from './Toprow.js'
 import DataTable from './DataTable.js'
 import ScatterPlot from './ScatterPlot.js'
 import ButtonRow from './ButtonRow.js'
 import MapPlot from './MapPlot.js'
+import TreePlot from './TreePlot.js'
 
 class MainPage extends Component {
   constructor (props) {
@@ -101,6 +102,9 @@ class MainPage extends Component {
         break
       case 'map':
         centralElement = <MapPlot columns={this.state.header} data={this.state.data} conversion={this.state.conversion} selected={this.state.selected}/>
+        break
+      case 'treemap':
+        centralElement = <TreePlot columns={this.state.header} data={this.state.data} conversion={this.state.conversion} selected={this.state.selected}/>
     }
 
     return (

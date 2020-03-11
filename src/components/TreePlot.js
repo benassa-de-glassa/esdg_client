@@ -4,28 +4,27 @@ import PropTypes from 'prop-types'
 import JqxDropDownList from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxdropdownlist'
 
 import Plot from 'react-plotly.js'
-import { API_URL } from '../paths'
 
-class MapPlot extends Component {
-  // constructor
+import { API_URL } from '../paths.js'
+
+class TreePlot extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      countryCodeConversion: {},
+      harmonizedSystemConversion: {},
       selectableDimensions: [],
-      countryDimensions: [],
+      productDimension: [],
       selectedDimension: {}
     }
 
-    this.getCountryConversionObject = this.getCountryConversionObject.bind(this)
-    this.getCountryDimensions = this.getCountryDimensions.bind(this)
+    this.getHSConversionObject = this.getHSConversionObject.bind(this)
+    this.getProductDimensions = this.getProductDimensions.bind(this)
     this.getValuesFromDimensionSelect = this.getValuesFromDimensionSelect.bind(this)
 
     this.onDimensionSelect = this.onDimensionSelect.bind(this)
     this.addDropdownRef = this.addDropdownRef.bind(this)
   }
 
-  // add references for the dropdown listboxes
   addDropdownRef (element) {
     if (element !== null) {
       const key = element._reactInternalFiber.key
@@ -39,13 +38,12 @@ class MapPlot extends Component {
     }
   }
 
-  // get the ISO3 codes required for plotly
-  getCountryConversionObject () {
+  getHSConversionObject () {
     // grab the conversion from esdg codes to ISO3 codes
     var url = new URL(API_URL)
-    url.pathname += 'country_conversion'
+    url.pathname += 'hs'
     // create the request parameters
-    var params = { from_code: 'FAOSTAT', to_code: 'ISO3' }
+    var params = { maximum_code_level: 3 }
     // add parameters to url search parameters
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     // fetch the url
@@ -55,16 +53,16 @@ class MapPlot extends Component {
       .then(res => {
         this.setState(previousState => ({
           ...previousState,
-          countryCodeConversion: res
+          harmonizedSystemConversion: res
         }))
       })
   }
 
   // determine which dimensions are country dimensions and which aren't
-  getCountryDimensions () {
+  getProductDimensions () {
     // grab the conversion from esdg codes to ISO3 codes
     var url = new URL(API_URL)
-    url.pathname += 'country_dimension'
+    url.pathname += 'product_dimension'
     // create the request parameters
     var params = { groups: this.props.selected.groups, dataset: this.props.selected.dataset }
     // add parameters to url search parameters
@@ -72,11 +70,11 @@ class MapPlot extends Component {
     // fetch the url
     // .then function chaining
     var dimensions = Object.keys(this.props.selected)
-    let countryDimension
+    let productDimension
     fetch(url)
       .then(res => res.json())
       .then(res => {
-        countryDimension = res
+        productDimension = res
       })
       .then(
         res => {
@@ -85,44 +83,17 @@ class MapPlot extends Component {
           dimensions.splice(dimensions.indexOf('dataset'), 1)
           // remove country dimensions from list of selectables
           // we assume all previously selected countries are to be plotted
-          countryDimension.forEach(value =>
+          productDimension.forEach(value =>
             dimensions.splice(dimensions.indexOf(value), 1)
           )
 
           this.setState(previousState => ({
             ...previousState,
-            countryDimensions: countryDimension,
+            productDimension: productDimension,
             selectableDimensions: dimensions
           }))
         }
       )
-  }
-
-  // handles the change of a dropDownListbox
-  onDimensionSelect (event, key) {
-    const ref = this.state.references[key].getSelectedItem()
-    // if - ifelse needs to be refactored.. avoids infinte loops
-    if (this.state.selectedDimension[key] === undefined) {
-      this.setState(previousState => ({
-        ...previousState,
-        selectedDimension: {
-          ...previousState.selectedDimension,
-          [key]: ref.value
-        }
-      }))
-
-      this.getValuesFromDimensionSelect()
-    } else if (this.state.selectedDimension[key] !== ref.value) {
-      this.setState(previousState => ({
-        ...previousState,
-        selectedDimension: {
-          ...previousState.selectedDimension,
-          [key]: ref.value
-        }
-      }))
-
-      this.getValuesFromDimensionSelect()
-    }
   }
 
   getValuesFromDimensionSelect () {
@@ -151,32 +122,63 @@ class MapPlot extends Component {
     // then find out in which column it is located
     const yearColumn = this.props.columns.indexOf(this.state.selectedDimension[yearDimension])
     // then map the column to a simple z array for the Plot component
-    const z = reducedData.map(row => row[yearColumn])
+    const values = reducedData.map(row => row[yearColumn])
 
     // get the location data from each row
     // get the correct column
-    const countryColumn = this.props.columns.indexOf(this.state.countryDimensions[0])
-    // map the FAOSTAT codes to the ISO3 codes required for the plotly.js component
-    const locations = reducedData.map(row => this.state.countryCodeConversion[row[countryColumn]])
+    const productColumn = this.props.columns.indexOf(this.state.productDimension[0])
+    // map the HS code to the correct label
+
+    const ids = reducedData.map(row => String(row[productColumn]))
+    console.log(ids)
+    const labels = ids.map(id => String(this.state.harmonizedSystemConversion[id][0]))
+    const parents = ids.map(id => this.state.harmonizedSystemConversion[id][1])
 
     this.setState(previousState => ({
       ...previousState,
-      z: z,
-      locations: locations
+      ids: ids,
+      values: values,
+      labels: labels,
+      parents: parents
     }))
   }
 
+  onDimensionSelect (event, key) {
+    const ref = this.state.references[key].getSelectedItem()
+    // if - ifelse needs to be refactored.. avoids infinte loops
+    if (this.state.selectedDimension[key] === undefined) {
+      this.setState(previousState => ({
+        ...previousState,
+        selectedDimension: {
+          ...previousState.selectedDimension,
+          [key]: ref.value
+        }
+      }))
+
+      this.getValuesFromDimensionSelect()
+    } else if (this.state.selectedDimension[key] !== ref.value) {
+      this.setState(previousState => ({
+        ...previousState,
+        selectedDimension: {
+          ...previousState.selectedDimension,
+          [key]: ref.value
+        }
+      }))
+
+      this.getValuesFromDimensionSelect()
+    }
+  }
+
   componentDidMount () {
-    this.getCountryConversionObject()
+    this.getHSConversionObject()
     if (this.props.conversion !== undefined) {
-      this.getCountryDimensions()
+      this.getProductDimensions()
     }
   }
 
   componentDidUpdate (prevState) {
     if (this.props.data !== prevState.data) {
-      console.log('props did update')
-      this.getCountryDimensions()
+      this.getProductDimensions()
       this.state.selectableDimensions.forEach(dimension => {
         if (this.state.ref !== undefined) {
           this.onDimensionSelect(undefined, dimension)
@@ -189,7 +191,7 @@ class MapPlot extends Component {
     const keys = this.state.selectableDimensions
 
     const dimensionalDropdownListboxes = keys.map(key => {
-      return <div key={key} className="listbox">
+      return <div key={key} className="listbox-div">
         {key}<br />
         <JqxDropDownList
           ref={this.addDropdownRef}
@@ -203,26 +205,18 @@ class MapPlot extends Component {
     })
 
     var data = [{
-      type: 'choropleth',
-      locations: this.state.locations,
-      z: this.state.z
+      type: 'treemap',
+      ids: this.state.ids,
+      labels: this.state.labels,
+      values: this.state.values,
+      parents: this.state.parents
     }]
 
-    var layout = {
-      title: '', // create title dynamically from selection
-      geo: { // TODO: allow user to select these options
-        showframe: false,
-        showcoastlines: true,
-        projection: {
-          type: 'robinson'
-        }
-      }
-    }
     return (
       <div>
         <Plot
           data={data}
-          layout={layout}
+          // layout={layout}
         />
         <br />
         {dimensionalDropdownListboxes}
@@ -230,12 +224,10 @@ class MapPlot extends Component {
     )
   }
 }
-
-MapPlot.propTypes = {
+TreePlot.propTypes = {
   columns: PropTypes.array,
   data: PropTypes.object,
   conversion: PropTypes.object,
   selected: PropTypes.object
 }
-
-export default MapPlot
+export default TreePlot

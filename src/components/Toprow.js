@@ -173,7 +173,7 @@ class Toprow extends Component {
       const keys = Object.keys(this.state.items.meta)
 
       metaListboxes = keys.map(key => {
-        return <div key={key} className="listbox-div">
+        return <div key={key} className="listbox">
           {key}<br />
           <JqxListBox
             ref={this.addSelectRef}
@@ -193,11 +193,11 @@ class Toprow extends Component {
 
     return (
       <Fragment>
-        <div className="toprow-div">
-          <div className="listbox-div">
+        <div className="toprow">
+          <div className="listbox">
             Domain <br />
             <JqxListBox
-              className="listbox-div"
+              className="listbox"
               key={'groups'}
               ref={this.addSelectRef}
               source={this.state.items.groups}
@@ -205,10 +205,10 @@ class Toprow extends Component {
               onChange={e => this.makeRequest(e, 'dataset')}
             />
           </div>
-          <div className="listbox-div">
+          <div className="listbox">
             Dataset <br />
             <JqxListBox
-              className="listbox-div"
+              className="listbox"
               key={'dataset'}
               ref={this.addSelectRef}
               source={this.state.items.dataset}
