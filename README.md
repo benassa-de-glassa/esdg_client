@@ -1,3 +1,16 @@
+This is the code to the frontend to the ESDG project. It uses jqwidgets for the form elements and plotly.js for the graphics
+
+## Current features
+### Grid
+The data is shown as a Table. The years on the horizontal axis. Each row has a unique combination of the non-year dimensions.
+### Plot
+The data is shown as a timeseries. Each table row is a unique series.
+### Map
+The data is shown on a cloropeth map. The non-country dimensions have to be single selected in the dropdown boxes below the map
+### In progress - TreeMap
+The data is shown on a tree map. Requires Data from the harmonized system from UN Commodity Table (https://unstats.un.org/unsd/tradekb/Knowledgebase/50039/UN-Comtrade-Reference-Tables). The non-products dimensions have to be single selected in the dropdown boxes below the tree map.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
