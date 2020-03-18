@@ -130,8 +130,8 @@ class TreePlot extends Component {
     // map the HS code to the correct label
 
     const ids = reducedData.map(row => String(row[productColumn]))
-    console.log(ids)
-    const labels = ids.map(id => String(this.state.harmonizedSystemConversion[id][0]))
+
+    const labels = ids.map(id => this.state.harmonizedSystemConversion[id][0])
     const parents = ids.map(id => this.state.harmonizedSystemConversion[id][1])
 
     this.setState(previousState => ({
