@@ -108,8 +108,8 @@ class MainPage extends Component {
     }
 
     return (
-      <div>
-        <div >
+      <div className="wrapper">
+        <div className="title-grid">
           <h1> ESDG</h1>
           <JqxLoader
             ref={this.loadAnimator}
@@ -118,13 +118,13 @@ class MainPage extends Component {
             height={90}
           />
         </div>
-        <div>
+        <div className="toprow-grid">
           <Toprow getSelected={this.getSelected} />
         </div>
-        <div>
+        <div className="centralelement-grid">
           {centralElement}
         </div>
-        <div>
+        <div className="buttonrow-grid">
           <ButtonRow onChange={this.getView} />
         </div>
       </div>
